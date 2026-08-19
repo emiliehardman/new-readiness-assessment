@@ -149,11 +149,14 @@ export default function AssessmentPage() {
               <h2 className="font-serif text-xl font-semibold text-ink">Before you begin</h2>
               <p className="mt-2 text-[14.5px] leading-relaxed text-ink-faint">
                 Rate each statement for one specific change initiative, based on where things
-                actually stand today rather than where you intend them to be. Many of these items
-                ask whether you can name or point to something concrete. &ldquo;Rarely true&rdquo;
-                is a useful and normal answer, and the value of this instrument comes from the
-                items where you hesitate. If a facilitator is running this as part of a cohort,
-                your responses save automatically when you generate your summary.
+                actually stand today rather than where you intend them to be. Most items ask
+                whether you can name or point to something concrete, so &ldquo;Rarely true&rdquo;
+                is a normal and useful answer, and the items where you hesitate are the ones
+                worth bringing to the workshop. Where an item says &ldquo;we,&rdquo; read that as
+                you together with whoever shares leadership responsibility for this initiative,
+                which in a smaller library may be one or two colleagues. If a facilitator is
+                running this as part of a cohort, your responses save automatically when you
+                generate your summary.
               </p>
             </div>
             <div className="rounded-card border border-paper-rule bg-paper px-5 py-3 text-right">

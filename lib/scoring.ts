@@ -124,7 +124,7 @@ export function reflectionPrompts(
 
   if (topPriority) {
     prompts.push(
-      `Your lowest-scoring area is ${topPriority.short.toLowerCase()}. What specifically made you hesitate on those items, and is that something you have said out loud to anyone yet?`
+      `Your lowest-scoring area is ${topPriority.short.toLowerCase()}. What specifically made you hesitate on those items, and have you said that out loud to anyone yet?`
     );
   }
   if (secondPriority) {
@@ -138,10 +138,10 @@ export function reflectionPrompts(
     );
   }
   prompts.push(
-    "Which group in your library experiences this change most differently from how leadership experiences it, and how would you know?"
+    "What would you need to ask for, and of whom, to give this initiative the conditions it actually requires? What has stopped you from asking?"
   );
   prompts.push(
-    "What is the question about this initiative you would least like to be asked in an all-staff meeting?"
+    "Where in this change are you avoiding a conversation, a decision, or a person, and what would it take to stop avoiding it?"
   );
 
   return prompts.slice(0, 5);

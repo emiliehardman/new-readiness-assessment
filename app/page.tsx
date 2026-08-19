@@ -134,17 +134,10 @@ export default function AssessmentPage() {
               Library Change Readiness Assessment
             </h1>
             <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-paper-card/70">
-              A structured diagnostic for academic library leaders, built to surface where a
-              specific change initiative is genuinely ready to move — and where it isn&rsquo;t.
+              A structured diagnostic for academic library leaders, built to show where a
+              specific change initiative is genuinely ready to move, and where it isn&rsquo;t.
             </p>
           </div>
-          <Link
-            href="/facilitator"
-            className="no-print mt-1 hidden shrink-0 items-center gap-1.5 rounded-full border border-paper-card/25 px-4 py-2 text-sm font-medium text-paper-card/85 transition hover:border-brass-light hover:text-brass-light sm:flex"
-          >
-            Facilitator view
-            <ArrowUpRight size={15} />
-          </Link>
         </div>
       </header>
 
@@ -156,7 +149,7 @@ export default function AssessmentPage() {
               <h2 className="font-serif text-xl font-semibold text-ink">Before you begin</h2>
               <p className="mt-2 text-[14.5px] leading-relaxed text-ink-faint">
                 Rate each statement for one specific change initiative, using your honest read of
-                the current state — not the intended or ideal state. If a facilitator is running
+                the current state, not the intended or ideal state. If a facilitator is running
                 this as part of a cohort, your responses save automatically when you generate your
                 summary.
               </p>
@@ -205,19 +198,19 @@ export default function AssessmentPage() {
                 className="rounded-full border px-3 py-1 font-medium"
                 style={{ background: STATUS_COLORS.red.bg, borderColor: STATUS_COLORS.red.border, color: STATUS_COLORS.red.text }}
               >
-                High risk — below 1.75
+                High risk: below 1.75
               </span>
               <span
                 className="rounded-full border px-3 py-1 font-medium"
                 style={{ background: STATUS_COLORS.amber.bg, borderColor: STATUS_COLORS.amber.border, color: STATUS_COLORS.amber.text }}
               >
-                At risk — 1.75 to 2.49
+                At risk: 1.75 to 2.49
               </span>
               <span
                 className="rounded-full border px-3 py-1 font-medium"
                 style={{ background: STATUS_COLORS.green.bg, borderColor: STATUS_COLORS.green.border, color: STATUS_COLORS.green.text }}
               >
-                Strength — 2.5 and above
+                Strength: 2.5 and above
               </span>
             </div>
           </div>
@@ -273,7 +266,7 @@ export default function AssessmentPage() {
             ))}
           </main>
 
-          <aside className="grid gap-6 lg:sticky lg:top-6">
+          <aside className="grid gap-6 self-start lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:overscroll-contain lg:pr-1">
             <div className="rounded-card border border-paper-rule bg-paper-card p-6">
               <h2 className="font-serif text-lg font-semibold text-ink">Current results</h2>
               <p className="mt-1 text-[13px] text-ink-faint">
@@ -333,7 +326,7 @@ export default function AssessmentPage() {
                     <div className="mt-3.5 space-y-1 text-[11.5px] leading-relaxed text-ink-faint">
                       <div><strong className="text-ink">Leadership</strong> = Leadership sponsorship + Communication.</div>
                       <div><strong className="text-ink">Success</strong> = Strategic clarity + Sustainment.</div>
-                      <div><strong className="text-ink">Delivery</strong> = Managers + Capacity.</div>
+                      <div><strong className="text-ink">Delivery</strong> = Area leads + Capacity.</div>
                       <div><strong className="text-ink">Readiness</strong> = Staff readiness + Ethics &amp; risk.</div>
                     </div>
                   </div>
@@ -435,6 +428,14 @@ export default function AssessmentPage() {
           </div>
         </section>
       </div>
+
+      <Link
+        href="/facilitator"
+        className="no-print fixed bottom-5 right-5 z-10 inline-flex items-center gap-1.5 rounded-full border border-paper-rule bg-paper-card/95 px-3.5 py-2 text-[12.5px] font-medium text-ink-faint shadow-paper backdrop-blur transition hover:border-ink-faint hover:text-ink"
+      >
+        Facilitator view
+        <ArrowUpRight size={13} />
+      </Link>
     </div>
   );
 }
@@ -454,7 +455,7 @@ function SaveStatus({ state }: { state: SaveState }) {
   if (state === "error") {
     return (
       <span className="text-[12.5px]" style={{ color: STATUS_COLORS.red.text }}>
-        Couldn&rsquo;t save to the workshop database — your local summary above is unaffected.
+        Couldn&rsquo;t save to the workshop database. Your local summary above is unaffected.
       </span>
     );
   }

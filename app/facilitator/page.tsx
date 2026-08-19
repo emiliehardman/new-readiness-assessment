@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Download, Lock, RefreshCcw } from "lucide-react";
+import { ArrowLeft, Download, Lock, RefreshCcw, Trash2 } from "lucide-react";
 import { domains } from "@/lib/domains";
 import { getStatus, type AggregateScores, type StatusKey } from "@/lib/scoring";
 import { STATUS_COLORS } from "@/lib/statusColors";
@@ -46,6 +46,7 @@ export default function FacilitatorPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState<ResultsPayload | null>(null);
+  const [clearing, setClearing] = useState(false);
 
   async function fetchResults(pw: string) {
     setLoading(true);
@@ -68,6 +69,33 @@ export default function FacilitatorPage() {
       setError("Could not reach the server.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleClear() {
+    const count = data?.count ?? 0;
+    const confirmed = window.confirm(
+      `This will permanently delete all ${count} submission${count === 1 ? "" : "s"} currently in the database. Use this between workshop groups once you no longer need this group's results. Continue?`
+    );
+    if (!confirmed) return;
+
+    setClearing(true);
+    try {
+      const res = await fetch("/api/clear", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error || "Could not clear results.");
+        return;
+      }
+      await fetchResults(password);
+    } catch {
+      setError("Could not reach the server.");
+    } finally {
+      setClearing(false);
     }
   }
 
@@ -159,6 +187,14 @@ export default function FacilitatorPage() {
             >
               <Download size={14} />
               Export CSV
+            </button>
+            <button
+              onClick={handleClear}
+              disabled={!data.count || clearing}
+              className="inline-flex items-center gap-1.5 rounded-full border border-status-red px-4 py-2 text-[13px] font-semibold text-status-red transition hover:bg-status-red-bg disabled:opacity-40"
+            >
+              <Trash2 size={14} />
+              {clearing ? "Clearing…" : "Clear results"}
             </button>
           </div>
         </div>

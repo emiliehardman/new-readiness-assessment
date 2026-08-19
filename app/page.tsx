@@ -148,10 +148,12 @@ export default function AssessmentPage() {
             <div className="max-w-2xl">
               <h2 className="font-serif text-xl font-semibold text-ink">Before you begin</h2>
               <p className="mt-2 text-[14.5px] leading-relaxed text-ink-faint">
-                Rate each statement for one specific change initiative, using your honest read of
-                the current state, not the intended or ideal state. If a facilitator is running
-                this as part of a cohort, your responses save automatically when you generate your
-                summary.
+                Rate each statement for one specific change initiative, based on where things
+                actually stand today rather than where you intend them to be. Many of these items
+                ask whether you can name or point to something concrete. &ldquo;Rarely true&rdquo;
+                is a useful and normal answer, and the value of this instrument comes from the
+                items where you hesitate. If a facilitator is running this as part of a cohort,
+                your responses save automatically when you generate your summary.
               </p>
             </div>
             <div className="rounded-card border border-paper-rule bg-paper px-5 py-3 text-right">

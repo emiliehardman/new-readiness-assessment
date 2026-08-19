@@ -15,17 +15,30 @@ export const SCALE = [
 // 8 domains x 3 statements, written for academic library leadership teams
 // of any size, including smaller libraries where one or two people handle
 // what a larger institution might split across a formal cabinet.
+//
+// Item-writing principles used throughout:
+//  - Each item describes something observable or answerable, not a virtue.
+//    A leader should be able to answer "rarely true" without confessing to
+//    bad character.
+//  - First person ("I can name...") is used where the item interrogates the
+//    respondent's own practice and knowledge. Third person ("Staff can...",
+//    "Area leads have...") is used where the item describes a condition in
+//    the organization that the respondent is observing.
+//  - Present and ongoing tense throughout, since most respondents will be
+//    mid-initiative rather than looking back on a finished one.
+//  - Specific examples are illustrative, never the definition of the item,
+//    so that items stay answerable across very different kinds of change.
 export const domains: Domain[] = [
   {
     id: "strategic",
     title: "Strategic clarity and case for change",
     short: "Strategic clarity",
     description:
-      "Whether the library has articulated why change is necessary, what success would look like, and how the initiative aligns with institutional mission and local context.",
+      "Whether the reasons for this change, the picture of what success looks like, and the tradeoffs it requires are clear enough to be described consistently by different people.",
     items: [
-      "Leaders can clearly explain why this change matters for service, staffing, and the library's relevance to campus.",
-      "The desired future state is concrete enough that staff can picture what will be different.",
-      "This initiative fits our library's mission, size, and constraints rather than importing a model built for a much larger institution.",
+      "I can explain why this change is necessary now in terms that connect to the work our staff actually do, not only to budget or institutional pressure.",
+      "If I asked three staff members to describe what will be different when this is done, I would expect broadly similar answers.",
+      "I can name what we are choosing to do less of, or stop doing, to make room for this change.",
     ],
   },
   {
@@ -33,11 +46,11 @@ export const domains: Domain[] = [
     title: "Leadership sponsorship and decision-making",
     short: "Leadership",
     description:
-      "Whether the people who hold decision-making authority for the library, whatever their titles, are visibly sponsoring the change and making timely decisions. In a small library this may be one director working closely with a couple of area leads rather than a formal cabinet.",
+      "Whether the people holding decision-making authority, whatever their titles, are backing this change with visible choices and moving decisions along. In a small library this may be one director working closely with a couple of area leads rather than a formal cabinet.",
     items: [
-      "Library leadership visibly and consistently sponsors this change through their behavior, priorities, and resource choices, not just announcements.",
-      "It's clear who has the authority to make decisions about this initiative, whether that's a single director, a small leadership team, or area managers sharing responsibility.",
-      "Decisions get made in a reasonable timeframe, even when consultation is informal or the decision-making group is small.",
+      "I can point to specific decisions or resource choices that visibly signal this change is a priority, beyond saying that it is one.",
+      "Everyone working on this initiative knows who makes the final call, including where that authority is genuinely shared.",
+      "Decisions on this initiative get made and communicated quickly enough to keep work moving, and I can name where they tend to stall.",
     ],
   },
   {
@@ -45,11 +58,11 @@ export const domains: Domain[] = [
     title: "Communication, trust, and meaning-making",
     short: "Communication",
     description:
-      "Whether information is credible, timely, and adapted for how people at different levels of the library experience change.",
+      "Whether what leaders are saying is reaching people accurately, and whether leaders know what staff actually understand as opposed to what has been announced.",
     items: [
-      "Staff receive timely, honest communication, including what's not yet known, and rumors or mixed messages get addressed quickly.",
-      "Messages are adapted for different groups rather than delivered as one generic announcement to everyone.",
-      "Leaders communicate in ways that build trust rather than sounding defensive, evasive, or overly promotional.",
+      "I know what staff currently believe about this change, including any misconceptions, based on what they have told us rather than what we assume.",
+      "We have told staff what is still undecided or unknown, not only what has been settled.",
+      "I can identify which groups in the library are hearing about this secondhand rather than directly from us.",
     ],
   },
   {
@@ -57,11 +70,11 @@ export const domains: Domain[] = [
     title: "Area lead and supervisor readiness",
     short: "Area leads",
     description:
-      "Whether the people between senior leadership and frontline staff, whether their title is manager, coordinator, supervisor, or team lead, have the clarity, authority, and support to carry the change into daily practice.",
+      "Whether the people between senior leadership and frontline work, whatever their title, can carry this change into daily practice and are heard when they push back.",
     items: [
-      "Area leads and supervisors understand the goals, timeline, and implications of the change well enough to explain it to their teams.",
-      "Area leads have enough authority to adapt implementation to the realities of their own area, even when they're also doing frontline work themselves.",
-      "Area leads have a real channel to raise concerns and workload pressure upward before problems escalate, rather than absorbing them silently.",
+      "Area leads could explain this change to their teams in their own words, without relying on our messaging.",
+      "Area leads have adapted how this change works in their own area, and those adaptations have held.",
+      "I can name a specific concern an area lead has raised about this change, and say what happened as a result.",
     ],
   },
   {
@@ -69,11 +82,11 @@ export const domains: Domain[] = [
     title: "Staff readiness, professional identity, and participation",
     short: "Staff readiness",
     description:
-      "Whether staff have opportunities to understand, shape, and prepare for the change, especially when it affects professional norms and work identity.",
+      "Whether the people whose daily work changes most understand what is coming, have had a hand in shaping it, and are being prepared for it from their actual starting points.",
     items: [
-      "Staff understand how the change may alter workflows, expectations, or what counts as good work in their role.",
-      "Staff concerns are taken seriously, and the people who will carry the heaviest implementation burden have real opportunities to inform the process.",
-      "Training and support plans account for uneven technical fluency and different starting points across staff, including student workers and part-time employees where relevant.",
+      "Staff can describe how their own daily work will change, not just what the initiative is in the abstract.",
+      "I can name which staff carry the largest share of implementation work, and I have checked with them directly about whether the plan is workable.",
+      "Our training and support plans account for the full range of starting points across staff, including those least comfortable with this change.",
     ],
   },
   {
@@ -81,11 +94,11 @@ export const domains: Domain[] = [
     title: "Operational capacity, resourcing, and pace",
     short: "Capacity",
     description:
-      "Whether the library has the staffing, time, sequencing, and operational discipline to implement change without destabilizing core services like reference, instruction, or circulation.",
+      "Whether the time, staffing, and sequencing this change requires have been reckoned with honestly against everything the library is already committed to.",
     items: [
-      "The pace and staffing assumptions behind this initiative are realistic for a library our size, where most people already wear multiple hats.",
-      "Core public services and existing obligations have been factored into the pacing of implementation.",
-      "Dependencies, risks, and competing priorities are visible and actively managed rather than discovered as problems arise.",
+      "The time this change requires has been subtracted from something else, rather than added on top of existing workloads.",
+      "I can name what would have to give if this initiative takes longer, costs more, or proves harder than planned.",
+      "We identify dependencies and competing priorities before they become urgent, rather than discovering them as problems.",
     ],
   },
   {
@@ -93,11 +106,11 @@ export const domains: Domain[] = [
     title: "Ethics, risk, and institutional values",
     short: "Ethics & risk",
     description:
-      "Whether the change has been evaluated through the library's public-service values, including privacy, accessibility, equity, and reputational risk.",
+      "Whether the risks this change creates have been examined from vantage points other than leadership's, and whether the library's obligations to the people it serves have been weighed alongside the benefits.",
     items: [
-      "Relevant ethical and risk issues, such as accessibility, patron privacy, staff workload, and reputational risk, were identified early enough to shape the initiative.",
-      "Leaders can explain how this change aligns with the library's stated values and its obligations to students, faculty, and the community it serves.",
-      "Risk is being managed explicitly by leadership rather than deferred to frontline staff or treated as someone else's problem.",
+      "I can name the specific risks this change creates for particular roles or groups in the library, rather than describing risk in general terms.",
+      "I have considered how this change looks from vantage points other than my own, including the staff and patrons it affects most directly.",
+      "For each significant risk we have identified, I can say what we are doing to reduce it or to prepare the people who will encounter it.",
     ],
   },
   {
@@ -105,11 +118,11 @@ export const domains: Domain[] = [
     title: "Assessment, reinforcement, and sustainment",
     short: "Sustainment",
     description:
-      "Whether the library is measuring adoption, learning from implementation, and reinforcing change beyond initial launch.",
+      "Whether attention, measurement, and course correction are planned to continue past the point where the initial push is over.",
     items: [
-      "Leaders are treating this as an ongoing practice change, with reinforcement planned beyond the initial rollout, rather than a one-time announcement or training event.",
-      "The library has clear indicators that will show whether the change is actually taking hold in day-to-day work.",
-      "Feedback loops are in place to identify implementation problems and adjust course, even if that just means regular check-ins with a small team.",
+      "We have planned for what happens after launch, including who keeps attention on this once the initial effort winds down.",
+      "I can describe what we would see in day-to-day work six months from now that would tell us this change has genuinely taken hold.",
+      "We have a regular point at which we review how implementation is going and can change course, even if that is an informal check-in with a small team.",
     ],
   },
 ];

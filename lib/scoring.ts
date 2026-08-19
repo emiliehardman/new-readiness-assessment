@@ -105,12 +105,12 @@ export function topPriorities(domainScores: DomainScore[], n = 3): DomainScore[]
 
 export function overallInterpretation(overall: number): string {
   if (overall >= 2.5) {
-    return "This initiative appears comparatively well-positioned, but the main question is whether strengths are durable under implementation pressure. Review at-risk areas for hidden fragility.";
+    return "Across most domains, the groundwork for this change appears to be in place. The useful question now is which of these strengths would hold up under real implementation pressure, and whether any high scores reflect confidence that has not yet been tested against what staff would say.";
   }
   if (overall >= 1.75) {
-    return "This initiative shows mixed readiness. Progress is possible, but uneven sponsorship, capacity, or trust may create drag unless addressed directly.";
+    return "This initiative shows uneven readiness. There is enough in place to move, but the gaps are likely to show up as friction once implementation is underway. The lower-scoring domains below are worth examining before the pace picks up.";
   }
-  return "This initiative is at elevated risk. Before accelerating implementation, leaders should clarify the case for change, stabilize communication, and address core sponsorship or capacity gaps.";
+  return "Several foundations for this change are not yet solid. This is a common and workable place to be early on, but the lower-scoring domains below point to work worth doing before implementation accelerates, particularly anything involving clarity, capacity, or what staff currently understand.";
 }
 
 export function reflectionPrompts(
@@ -124,23 +124,25 @@ export function reflectionPrompts(
 
   if (topPriority) {
     prompts.push(
-      `What is one concrete action you could take in the next 30 days to strengthen ${topPriority.short.toLowerCase()}?`
+      `Your lowest-scoring area is ${topPriority.short.toLowerCase()}. What specifically made you hesitate on those items, and is that something you have said out loud to anyone yet?`
     );
   }
   if (secondPriority) {
     prompts.push(
-      `Where might weaknesses in ${secondPriority.short.toLowerCase()} slow implementation, and what early intervention would help?`
+      `If ${secondPriority.short.toLowerCase()} does not improve, what is the first thing that would go wrong, and who would notice it first?`
     );
   }
   if (topStrength) {
     prompts.push(
-      `How can you use your relative strength in ${topStrength.short.toLowerCase()} to support weaker areas of this initiative?`
+      `You scored highest on ${topStrength.short.toLowerCase()}. What evidence do you have for that beyond your own vantage point, and would your staff rate it the same way?`
     );
   }
   prompts.push(
-    "Where do people in your library likely have a different experience of this change than senior leadership does?"
+    "Which group in your library experiences this change most differently from how leadership experiences it, and how would you know?"
   );
-  prompts.push("What is still unclear, untested, or under-communicated in this initiative?");
+  prompts.push(
+    "What is the question about this initiative you would least like to be asked in an all-staff meeting?"
+  );
 
   return prompts.slice(0, 5);
 }

@@ -129,28 +129,25 @@ export function computeAggregateScores(domainScores: DomainScore[]): AggregateSc
   };
 }
 
-// When the cutoff score is tied across domains, array order would
-// otherwise decide arbitrarily which one "counts" as top-N. This extends
-// the slice to include every domain tied at the cutoff, up to a hard cap,
-// so a tie is represented as a tie rather than silently broken.
-function extendForTies(sorted: DomainScore[], n: number, hardCap = 4): DomainScore[] {
-  if (sorted.length <= n) return sorted;
-  const cutoffValue = sorted[n - 1].average;
-  let end = n;
-  while (end < sorted.length && end < hardCap && sorted[end].average === cutoffValue) {
-    end++;
-  }
-  return sorted.slice(0, end);
+// Strengths and priorities are defined by actual status band, not by rank.
+// An earlier version took "the top 3, extended for ties" independently in
+// each direction, which could pull a merely middling, at-risk domain into
+// BOTH lists at once if enough scores clustered together. Filtering by
+// status makes that structurally impossible: a domain can't be green and
+// red at the same time. If nothing genuinely qualifies, the list is empty,
+// which is the honest answer rather than a manufactured top 3.
+export function topStrengths(domainScores: DomainScore[], max = 4): DomainScore[] {
+  return domainScores
+    .filter((d) => d.average > 0 && getStatus(d.average).key === "green")
+    .sort((a, b) => b.average - a.average)
+    .slice(0, max);
 }
 
-export function topStrengths(domainScores: DomainScore[], n = 3): DomainScore[] {
-  const sorted = [...domainScores].filter((d) => d.average > 0).sort((a, b) => b.average - a.average);
-  return extendForTies(sorted, n);
-}
-
-export function topPriorities(domainScores: DomainScore[], n = 3): DomainScore[] {
-  const sorted = [...domainScores].filter((d) => d.average > 0).sort((a, b) => a.average - b.average);
-  return extendForTies(sorted, n);
+export function topPriorities(domainScores: DomainScore[], max = 4): DomainScore[] {
+  return domainScores
+    .filter((d) => d.average > 0 && getStatus(d.average).key === "red")
+    .sort((a, b) => a.average - b.average)
+    .slice(0, max);
 }
 
 export function overallInterpretation(overall: number): string {
@@ -175,14 +172,7 @@ export function reflectionPrompts(
 ): ReflectionPrompt[] {
   const prompts: ReflectionPrompt[] = [];
 
-  // Only meaningful when there's an actual highest/lowest distinction. If
-  // every domain landed on the same average, "lowest" and "highest" are the
-  // same domains, and singling any out would be false precision.
-  const hasSpread = Boolean(
-    strengths[0] && priorities[0] && strengths[0].average > priorities[0].average
-  );
-
-  if (hasSpread && priorities.length) {
+  if (priorities.length) {
     const lowestValue = priorities[0].average;
     priorities
       .filter((p) => p.average === lowestValue)
@@ -192,17 +182,13 @@ export function reflectionPrompts(
       });
   }
 
-  if (hasSpread && strengths.length) {
+  if (strengths.length) {
     const highestValue = strengths[0].average;
     strengths
       .filter((s) => s.average === highestValue)
       .slice(0, 2)
       .forEach((domain) => {
-        // Skip a domain already shown above as a priority (only possible in
-        // unusual score distributions where the lists briefly overlap).
-        if (!prompts.some((p) => p.label === domain.short)) {
-          prompts.push({ label: domain.short, question: domain.reflectionPrompt });
-        }
+        prompts.push({ label: domain.short, question: domain.reflectionPrompt });
       });
   }
 

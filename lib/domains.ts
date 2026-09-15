@@ -83,7 +83,7 @@ export const domains: Domain[] = [
       "I can name what slows decisions on this initiative, including my own hesitation or avoidance where that is a factor.",
     ],
     strengthNote:
-      "Your visible follow-through is buying you credibility. Spend some of it on the harder call you've been deferring, rather than banking it.",
+      "Staff can see you following through on this, which is what earns you room to make an unpopular call. Use that room now: name the decision you've been sitting on, and make it while people still trust your judgment here.",
     priorityNote:
       "Name one decision on this initiative that has sat unmade for more than two weeks. Either make it this week, or set a firm date by which you will.",
     reflectionPrompt:
@@ -101,7 +101,7 @@ export const domains: Domain[] = [
       "I have a realistic sense of how staff are interpreting this change among themselves, in the conversations that happen outside formal channels.",
     ],
     strengthNote:
-      "Keep going back to the same handful of staff for an honest read, not just the ones who tell you things are going well.",
+      "You're hearing from staff directly, not just through filtered channels. Keep it that way by deliberately checking in with people who don't volunteer their opinions, since they're often the ones with the most accurate read.",
     priorityNote:
       "This week, ask one staff member outside your usual circle what they think is happening with this change, and compare their answer to what you've actually said.",
     reflectionPrompt:
@@ -119,7 +119,7 @@ export const domains: Domain[] = [
       "When an area lead meets resistance from their team, I help them work through it rather than stepping in to smooth it over or leaving them to absorb it alone.",
     ],
     strengthNote:
-      "Tell your area leads directly that backing them through friction is deliberate, not incidental. That's what keeps them bringing you the hard stuff instead of managing around you.",
+      "Tell your area leads plainly that when they hit resistance, you want to hear about it, not have it quietly handled without you. Saying that directly is what keeps them bringing you real problems instead of working around you.",
     priorityNote:
       "Sit in on how one area lead is handling pushback this month. Ask what support would actually help before assuming you already know.",
     reflectionPrompt:
@@ -155,7 +155,7 @@ export const domains: Domain[] = [
       "We identify dependencies and competing priorities before they become urgent, rather than discovering them as problems.",
     ],
     strengthNote:
-      "Use this credibility now to build in slack for the next phase, before the schedule tightens and there's no room left to ask for it.",
+      "The staffing math for this initiative is realistic right now. Use that while it holds: build in schedule slack for the next phase before workload creeps up and there's no room left to negotiate.",
     priorityNote:
       "Draft the specific ask you've been putting off, whether that's money, time, or a position, even if you aren't ready to send it yet. A written draft is easier to act on than a vague intention.",
     reflectionPrompt:
@@ -173,7 +173,7 @@ export const domains: Domain[] = [
       "For each significant risk I have identified, I can say what we are doing to reduce it or to prepare the people who will encounter it.",
     ],
     strengthNote:
-      "Keep revisiting this list as the initiative evolves. The risks you named at launch are rarely the ones that actually materialize six months in.",
+      "The risks here are being actively managed, not just logged once and set aside. Keep revisiting them as the initiative evolves: the risk that actually causes a problem six months from now is rarely the one you flagged at launch.",
     priorityNote:
       "Pick one risk you've quietly written off as unlikely, and ask a colleague for their honest take on it before you let it drop.",
     reflectionPrompt:

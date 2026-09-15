@@ -496,6 +496,7 @@ export default function AssessmentPage() {
                               </div>
                             </div>
                           </div>
+                          <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-faint">{d.description}</p>
                           <div className="mt-3 flex gap-2 border-t border-status-green-border/60 pt-3">
                             <Lightbulb size={15} className="mt-0.5 shrink-0" style={{ color: STATUS_COLORS.green.text }} />
                             <p className="text-[13px] leading-relaxed text-ink">{d.strengthNote}</p>

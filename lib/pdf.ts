@@ -303,6 +303,7 @@ export function exportResultsPdf(payload: ExportPayload) {
       doc.setTextColor(c.text);
       doc.text(d.average.toFixed(2), pageWidth - margin, y, { align: "right" });
       y += 15;
+      addWrappedText(d.description, { color: INK_FAINT, fontSize: 9.5, lineHeight: 13, indent: 12, spacingAfter: 3 });
       if (d.strengthNote) {
         addWrappedText(d.strengthNote, { color: INK_FAINT, fontSize: 9.5, lineHeight: 13, indent: 12, spacingAfter: 6 });
       } else {

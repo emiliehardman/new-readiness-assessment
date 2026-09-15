@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Download, Lock, RefreshCcw, Trash2, Link2, Check, Copy } from "lucide-react";
 import { domains } from "@/lib/domains";
@@ -8,6 +8,7 @@ import { getStatus, type AggregateScores, type StatusKey } from "@/lib/scoring";
 import { STATUS_COLORS } from "@/lib/statusColors";
 import { downloadSubmissionsCsv } from "@/lib/csv";
 import { slugify, unslugify } from "@/lib/slug";
+import { getSavedLinks, saveLink, type SavedLink } from "@/lib/localLinks";
 import StampBadge from "@/components/StampBadge";
 import AggregateGrid from "@/components/AggregateGrid";
 
@@ -53,7 +54,15 @@ export default function FacilitatorPage() {
   const [clearing, setClearing] = useState(false);
   const [selectedSession, setSelectedSession] = useState<string>("");
   const [linkLabel, setLinkLabel] = useState("");
-  const [copied, setCopied] = useState(false);
+  const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
+  const [savedLinks, setSavedLinks] = useState<SavedLink[]>([]);
+
+  // Links generated on this device persist across refreshes, so a
+  // facilitator can come back later and grab a link again instead of
+  // having to retype the exact same label or generate a fresh one.
+  useEffect(() => {
+    setSavedLinks(getSavedLinks());
+  }, []);
 
   async function fetchResults(pw: string, session?: string) {
     setLoading(true);
@@ -115,14 +124,22 @@ export default function FacilitatorPage() {
     }
   }
 
-  function handleCopyLink() {
-    const slug = slugify(linkLabel);
+  // Copies the link for any known slug, whether it came from the field the
+  // facilitator is currently typing in, the saved-links list, or an
+  // existing session pulled from the database.
+  function handleCopySlug(slug: string, label?: string) {
     if (!slug) return;
     const url = `${window.location.origin}/?session=${slug}`;
     navigator.clipboard.writeText(url).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setCopiedSlug(slug);
+      setTimeout(() => setCopiedSlug((current) => (current === slug ? null : current)), 2000);
+      setSavedLinks(saveLink(slug, label || unslugify(slug)));
     });
+  }
+
+  function handleCopyLink() {
+    const slug = slugify(linkLabel);
+    handleCopySlug(slug, linkLabel);
   }
 
   if (!authed) {
@@ -241,7 +258,7 @@ export default function FacilitatorPage() {
             Name this workshop group once, then share the generated link instead of your plain
             assessment URL. Everyone who opens it gets tagged with this session automatically, no
             typing required on their end, so results stay cleanly grouped with nothing to fix up
-            afterward.
+            afterward. Once you copy a link, it's saved below so you can grab it again later.
           </p>
           <div className="mt-4 flex flex-wrap items-end gap-3">
             <label className="block">
@@ -258,12 +275,45 @@ export default function FacilitatorPage() {
               disabled={!previewSlug}
               className="inline-flex items-center gap-1.5 rounded-sm2 bg-ink px-4 py-2.5 text-[13.5px] font-semibold text-paper-card transition hover:bg-ink-light disabled:opacity-40"
             >
-              {copied ? <Check size={14} /> : <Copy size={14} />}
-              {copied ? "Copied" : "Copy link"}
+              {copiedSlug === previewSlug ? <Check size={14} /> : <Copy size={14} />}
+              {copiedSlug === previewSlug ? "Copied" : "Copy link"}
             </button>
           </div>
           {previewUrl && (
             <div className="mt-2.5 font-mono text-[12px] text-ink-faint">{previewUrl}</div>
+          )}
+
+          {savedLinks.length > 0 && (
+            <div className="mt-5 border-t border-paper-rule pt-4">
+              <div className="text-[12.5px] font-semibold text-ink-faint">
+                Links you&rsquo;ve created on this device
+              </div>
+              <div className="mt-2.5 grid gap-2">
+                {savedLinks.map((link) => (
+                  <div
+                    key={link.slug}
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-sm2 border border-paper-rule bg-white px-3.5 py-2.5"
+                  >
+                    <div>
+                      <div className="text-[13.5px] font-medium text-ink">{link.label}</div>
+                      <div className="font-mono text-[11px] text-ink-faint">/?session={link.slug}</div>
+                    </div>
+                    <button
+                      onClick={() => handleCopySlug(link.slug, link.label)}
+                      className="inline-flex items-center gap-1.5 rounded-sm2 border border-paper-rule px-3 py-1.5 text-[12.5px] font-semibold text-ink transition hover:border-ink-faint"
+                    >
+                      {copiedSlug === link.slug ? <Check size={13} /> : <Copy size={13} />}
+                      {copiedSlug === link.slug ? "Copied" : "Copy"}
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-2.5 text-[11.5px] text-ink-faint">
+                Saved in this browser only. If you switch computers, generate the link again with
+                the same name, since a session with existing submissions can also be copied from
+                the &ldquo;Viewing&rdquo; row below.
+              </p>
+            </div>
           )}
         </section>
 
@@ -282,17 +332,25 @@ export default function FacilitatorPage() {
               All sessions
             </button>
             {data.availableSessions.map((s) => (
-              <button
-                key={s}
-                onClick={() => handleSessionFilterChange(s)}
-                className={`rounded-full border px-3 py-1.5 text-[12.5px] font-medium transition ${
-                  selectedSession === s
-                    ? "border-ink bg-ink text-paper-card"
-                    : "border-paper-rule bg-white text-ink-faint hover:border-ink-faint"
-                }`}
-              >
-                {unslugify(s)}
-              </button>
+              <div key={s} className="inline-flex items-center gap-1">
+                <button
+                  onClick={() => handleSessionFilterChange(s)}
+                  className={`rounded-full border px-3 py-1.5 text-[12.5px] font-medium transition ${
+                    selectedSession === s
+                      ? "border-ink bg-ink text-paper-card"
+                      : "border-paper-rule bg-white text-ink-faint hover:border-ink-faint"
+                  }`}
+                >
+                  {unslugify(s)}
+                </button>
+                <button
+                  onClick={() => handleCopySlug(s)}
+                  title="Copy this session's link"
+                  className="rounded-full border border-paper-rule bg-white p-1.5 text-ink-faint transition hover:border-ink-faint hover:text-ink"
+                >
+                  {copiedSlug === s ? <Check size={12} /> : <Copy size={12} />}
+                </button>
+              </div>
             ))}
           </div>
         )}

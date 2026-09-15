@@ -15,8 +15,10 @@ function getSql() {
 
 let schemaReady: Promise<void> | null = null;
 
-// Creates the submissions table on first use. Idempotent, so it's safe
-// to call before every query rather than requiring a manual migration.
+// Creates the submissions table on first use, and adds the session column
+// if it's missing. Both statements are idempotent, so this is safe to run
+// before every query, including against a database that was already
+// deployed before session tagging existed.
 export function ensureSchema(): Promise<void> {
   if (!schemaReady) {
     const sql = getSql();
@@ -36,6 +38,8 @@ export function ensureSchema(): Promise<void> {
           overall NUMERIC NOT NULL
         )
       `;
+      await sql`ALTER TABLE submissions ADD COLUMN IF NOT EXISTS session TEXT`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_submissions_session ON submissions (session)`;
     })();
   }
   return schemaReady;

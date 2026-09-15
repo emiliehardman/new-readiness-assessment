@@ -3,14 +3,20 @@ import { ensureSchema, getSql, getFacilitatorPassword } from "@/lib/db";
 
 export async function POST(req: NextRequest) {
   try {
-    const { password } = await req.json();
+    const { password, session } = await req.json();
     if (!password || password !== getFacilitatorPassword()) {
       return NextResponse.json({ error: "Incorrect passcode." }, { status: 401 });
     }
 
     await ensureSchema();
     const sql = getSql();
-    const deleted = (await sql`DELETE FROM submissions RETURNING id`) as { id: number }[];
+    const filterSession = typeof session === "string" && session.trim() ? session.trim() : null;
+
+    const deleted = (
+      filterSession
+        ? await sql`DELETE FROM submissions WHERE session = ${filterSession} RETURNING id`
+        : await sql`DELETE FROM submissions RETURNING id`
+    ) as { id: number }[];
 
     return NextResponse.json({ ok: true, deletedCount: deleted.length });
   } catch (err) {

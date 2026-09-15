@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Download, Lock, RefreshCcw, Trash2 } from "lucide-react";
+import { ArrowLeft, Download, Lock, RefreshCcw, Trash2, Link2, Check, Copy } from "lucide-react";
 import { domains } from "@/lib/domains";
 import { getStatus, type AggregateScores, type StatusKey } from "@/lib/scoring";
 import { STATUS_COLORS } from "@/lib/statusColors";
 import { downloadSubmissionsCsv } from "@/lib/csv";
+import { slugify, unslugify } from "@/lib/slug";
 import StampBadge from "@/components/StampBadge";
 import AggregateGrid from "@/components/AggregateGrid";
 
@@ -27,6 +28,7 @@ type Submission = {
   role: string | null;
   initiative: string | null;
   notes: string | null;
+  session: string | null;
   domainScores: { id: string; short: string; average: number }[];
   aggregateScores: Record<string, { title: string; average: number }>;
   overall: number;
@@ -38,6 +40,8 @@ type ResultsPayload = {
   domainAverages: DomainAverage[];
   bucketAverages: Record<string, number>;
   submissions: Submission[];
+  availableSessions: string[];
+  activeSession: string | null;
 };
 
 export default function FacilitatorPage() {
@@ -47,15 +51,18 @@ export default function FacilitatorPage() {
   const [error, setError] = useState("");
   const [data, setData] = useState<ResultsPayload | null>(null);
   const [clearing, setClearing] = useState(false);
+  const [selectedSession, setSelectedSession] = useState<string>("");
+  const [linkLabel, setLinkLabel] = useState("");
+  const [copied, setCopied] = useState(false);
 
-  async function fetchResults(pw: string) {
+  async function fetchResults(pw: string, session?: string) {
     setLoading(true);
     setError("");
     try {
       const res = await fetch("/api/results", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: pw }),
+        body: JSON.stringify({ password: pw, session: session || undefined }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -65,6 +72,7 @@ export default function FacilitatorPage() {
       }
       setData(json);
       setAuthed(true);
+      setSelectedSession(json.activeSession || "");
     } catch {
       setError("Could not reach the server.");
     } finally {
@@ -72,10 +80,18 @@ export default function FacilitatorPage() {
     }
   }
 
+  function handleSessionFilterChange(value: string) {
+    setSelectedSession(value);
+    fetchResults(password, value);
+  }
+
   async function handleClear() {
     const count = data?.count ?? 0;
+    const scopeText = selectedSession
+      ? `all ${count} submission${count === 1 ? "" : "s"} in the "${unslugify(selectedSession)}" session`
+      : `all ${count} submission${count === 1 ? "" : "s"} across every session currently in the database`;
     const confirmed = window.confirm(
-      `This will permanently delete all ${count} submission${count === 1 ? "" : "s"} currently in the database. Use this between workshop groups once you no longer need this group's results. Continue?`
+      `This will permanently delete ${scopeText}. Continue?`
     );
     if (!confirmed) return;
 
@@ -84,19 +100,29 @@ export default function FacilitatorPage() {
       const res = await fetch("/api/clear", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ password, session: selectedSession || undefined }),
       });
       const json = await res.json();
       if (!res.ok) {
         setError(json.error || "Could not clear results.");
         return;
       }
-      await fetchResults(password);
+      await fetchResults(password, selectedSession);
     } catch {
       setError("Could not reach the server.");
     } finally {
       setClearing(false);
     }
+  }
+
+  function handleCopyLink() {
+    const slug = slugify(linkLabel);
+    if (!slug) return;
+    const url = `${window.location.origin}/?session=${slug}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   }
 
   if (!authed) {
@@ -158,6 +184,9 @@ export default function FacilitatorPage() {
     readiness: { title: "Readiness", average: data.bucketAverages.readiness ?? 0 },
   };
 
+  const previewSlug = slugify(linkLabel);
+  const previewUrl = previewSlug ? `[your site]/?session=${previewSlug}` : null;
+
   return (
     <div className="min-h-screen bg-paper pb-24">
       <header className="ruled-bg bg-ink px-6 pb-10 pt-8 text-paper-card">
@@ -169,12 +198,13 @@ export default function FacilitatorPage() {
             </Link>
             <h1 className="mt-2 font-serif text-3xl font-semibold text-paper-card">Facilitator dashboard</h1>
             <p className="mt-1 text-[14px] text-paper-card/65">
-              {data.count} submission{data.count === 1 ? "" : "s"} in this cohort.
+              {data.count} submission{data.count === 1 ? "" : "s"}
+              {selectedSession ? ` in "${unslugify(selectedSession)}"` : " across all sessions"}.
             </p>
           </div>
-          <div className="flex gap-2.5">
+          <div className="flex flex-wrap gap-2.5">
             <button
-              onClick={() => fetchResults(password)}
+              onClick={() => fetchResults(password, selectedSession)}
               className="inline-flex items-center gap-1.5 rounded-full border border-paper-card/25 px-4 py-2 text-[13px] font-medium text-paper-card/85 transition hover:border-brass-light hover:text-brass-light"
             >
               <RefreshCcw size={14} />
@@ -194,27 +224,94 @@ export default function FacilitatorPage() {
               className="inline-flex items-center gap-1.5 rounded-full border border-status-red px-4 py-2 text-[13px] font-semibold text-status-red transition hover:bg-status-red-bg disabled:opacity-40"
             >
               <Trash2 size={14} />
-              {clearing ? "Clearing…" : "Clear results"}
+              {clearing ? "Clearing…" : selectedSession ? "Clear this session" : "Clear all results"}
             </button>
           </div>
         </div>
       </header>
 
       <div className="mx-auto max-w-6xl px-6">
+        {/* Session link generator */}
+        <section className="-mt-5 mb-6 rounded-card border border-paper-rule bg-paper-card p-6">
+          <div className="flex items-center gap-2 text-ink">
+            <Link2 size={16} className="text-brass-dark" />
+            <h2 className="font-serif text-lg font-semibold">Create a session link</h2>
+          </div>
+          <p className="mt-1.5 max-w-2xl text-[13px] leading-relaxed text-ink-faint">
+            Name this workshop group once, then share the generated link instead of your plain
+            assessment URL. Everyone who opens it gets tagged with this session automatically, no
+            typing required on their end, so results stay cleanly grouped with nothing to fix up
+            afterward.
+          </p>
+          <div className="mt-4 flex flex-wrap items-end gap-3">
+            <label className="block">
+              <div className="mb-1.5 text-[13px] font-semibold text-ink">Session name</div>
+              <input
+                value={linkLabel}
+                onChange={(e) => setLinkLabel(e.target.value)}
+                placeholder="e.g. September 2026 Cohort"
+                className="w-64 rounded-sm2 border border-paper-rule bg-white px-3 py-2.5 text-[14px] text-ink placeholder:text-ink-faint/60 focus:border-brass"
+              />
+            </label>
+            <button
+              onClick={handleCopyLink}
+              disabled={!previewSlug}
+              className="inline-flex items-center gap-1.5 rounded-sm2 bg-ink px-4 py-2.5 text-[13.5px] font-semibold text-paper-card transition hover:bg-ink-light disabled:opacity-40"
+            >
+              {copied ? <Check size={14} /> : <Copy size={14} />}
+              {copied ? "Copied" : "Copy link"}
+            </button>
+          </div>
+          {previewUrl && (
+            <div className="mt-2.5 font-mono text-[12px] text-ink-faint">{previewUrl}</div>
+          )}
+        </section>
+
+        {/* Session filter */}
+        {data.availableSessions.length > 0 && (
+          <div className="mb-5 flex flex-wrap items-center gap-2">
+            <span className="text-[12.5px] font-semibold text-ink-faint">Viewing:</span>
+            <button
+              onClick={() => handleSessionFilterChange("")}
+              className={`rounded-full border px-3 py-1.5 text-[12.5px] font-medium transition ${
+                !selectedSession
+                  ? "border-ink bg-ink text-paper-card"
+                  : "border-paper-rule bg-white text-ink-faint hover:border-ink-faint"
+              }`}
+            >
+              All sessions
+            </button>
+            {data.availableSessions.map((s) => (
+              <button
+                key={s}
+                onClick={() => handleSessionFilterChange(s)}
+                className={`rounded-full border px-3 py-1.5 text-[12.5px] font-medium transition ${
+                  selectedSession === s
+                    ? "border-ink bg-ink text-paper-card"
+                    : "border-paper-rule bg-white text-ink-faint hover:border-ink-faint"
+                }`}
+              >
+                {unslugify(s)}
+              </button>
+            ))}
+          </div>
+        )}
+
         {data.count === 0 ? (
-          <div className="-mt-5 rounded-card border border-dashed border-paper-rule bg-paper-card p-10 text-center">
+          <div className="rounded-card border border-dashed border-paper-rule bg-paper-card p-10 text-center">
             <p className="text-[14.5px] text-ink-faint">
-              No submissions yet. Once participants complete the assessment and select
-              &ldquo;Generate summary,&rdquo; their results will appear here.
+              No submissions yet{selectedSession ? ` for "${unslugify(selectedSession)}"` : ""}.
+              Once participants complete the assessment and select &ldquo;Generate summary,&rdquo;
+              their results will appear here.
             </p>
           </div>
         ) : (
           <>
-            <section className="-mt-5 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <section className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
               <div className="rounded-card border border-paper-rule bg-paper-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-[13px] text-ink-faint">Cohort overall readiness</div>
+                    <div className="text-[13px] text-ink-faint">Overall readiness</div>
                     <div className="font-serif text-4xl font-semibold text-ink">
                       {data.overallAverage.toFixed(2)}
                     </div>
@@ -229,7 +326,7 @@ export default function FacilitatorPage() {
             </section>
 
             <section className="mt-6 rounded-card border border-paper-rule bg-paper-card p-6 sm:p-7">
-              <h2 className="font-serif text-lg font-semibold text-ink">Domain averages across the cohort</h2>
+              <h2 className="font-serif text-lg font-semibold text-ink">Domain averages</h2>
               <div className="mt-4 grid gap-2.5">
                 {data.domainAverages.map((d) => {
                   const status = d.average ? getStatus(d.average) : { key: "neutral" as const, label: "No data" };
@@ -263,10 +360,11 @@ export default function FacilitatorPage() {
             <section className="mt-6 rounded-card border border-paper-rule bg-paper-card p-6 sm:p-7">
               <h2 className="font-serif text-lg font-semibold text-ink">Individual submissions</h2>
               <div className="mt-4 overflow-x-auto">
-                <table className="w-full min-w-[720px] border-collapse text-left text-[13.5px]">
+                <table className="w-full min-w-[820px] border-collapse text-left text-[13.5px]">
                   <thead>
                     <tr className="border-b border-paper-rule font-mono text-[11px] uppercase tracking-[0.08em] text-ink-faint">
                       <th className="py-2 pr-4">Submitted</th>
+                      {!selectedSession && <th className="py-2 pr-4">Session</th>}
                       <th className="py-2 pr-4">Participant</th>
                       <th className="py-2 pr-4">Institution</th>
                       <th className="py-2 pr-4">Role</th>
@@ -289,6 +387,11 @@ export default function FacilitatorPage() {
                               minute: "2-digit",
                             })}
                           </td>
+                          {!selectedSession && (
+                            <td className="py-2.5 pr-4 text-ink-faint">
+                              {s.session ? unslugify(s.session) : "—"}
+                            </td>
+                          )}
                           <td className="py-2.5 pr-4 text-ink">{s.participant || "—"}</td>
                           <td className="py-2.5 pr-4 text-ink-faint">{s.institution || "—"}</td>
                           <td className="py-2.5 pr-4 text-ink-faint">{s.role || "—"}</td>

@@ -1,21 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ensureSchema, getSql } from "@/lib/db";
+import { slugify } from "@/lib/slug";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { metadata, responses, domainScores, aggregateScores, overall } = body ?? {};
+    const { metadata, responses, domainScores, aggregateScores, overall, session } = body ?? {};
 
     if (!responses || !domainScores || !aggregateScores || typeof overall !== "number") {
       return NextResponse.json({ error: "Malformed submission." }, { status: 400 });
     }
+
+    // Normalized server-side regardless of what arrived, so the value
+    // stored is always consistent no matter how the session tag got here.
+    const normalizedSession = typeof session === "string" && session.trim() ? slugify(session) : null;
 
     await ensureSchema();
     const sql = getSql();
 
     await sql`
       INSERT INTO submissions
-        (participant, institution, role, initiative, notes, responses, domain_scores, aggregate_scores, overall)
+        (participant, institution, role, initiative, notes, responses, domain_scores, aggregate_scores, overall, session)
       VALUES
         (${metadata?.participant ?? null},
          ${metadata?.institution ?? null},
@@ -25,7 +30,8 @@ export async function POST(req: NextRequest) {
          ${JSON.stringify(responses)}::jsonb,
          ${JSON.stringify(domainScores)}::jsonb,
          ${JSON.stringify(aggregateScores)}::jsonb,
-         ${overall})
+         ${overall},
+         ${normalizedSession})
     `;
 
     return NextResponse.json({ ok: true });

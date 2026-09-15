@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, RotateCcw, Download, Save, Lightbulb, Compass } from "lucide-react";
 import { domains, SCALE } from "@/lib/domains";
+import { unslugify } from "@/lib/slug";
 import {
   emptyResponses,
   computeDomainScores,
@@ -57,7 +58,16 @@ export default function AssessmentPage() {
   const [responses, setResponses] = useState<Responses>(initialResponses);
   const [submitted, setSubmitted] = useState(false);
   const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [session, setSession] = useState<string | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+
+  // A workshop session, if this link came from a facilitator's generated
+  // link (?session=...). Read directly from the URL rather than a form
+  // field, since a value nobody has to type can't be mistyped.
+  useEffect(() => {
+    const raw = new URLSearchParams(window.location.search).get("session");
+    if (raw && raw.trim()) setSession(raw.trim());
+  }, []);
 
   const domainScores = useMemo(() => computeDomainScores(responses), [responses]);
   const { percent: completion } = useMemo(() => computeCompletion(responses), [responses]);
@@ -107,6 +117,7 @@ export default function AssessmentPage() {
           domainScores,
           aggregateScores,
           overall,
+          session,
         }),
       });
       setSaveState(res.ok ? "saved" : "error");
@@ -147,8 +158,9 @@ export default function AssessmentPage() {
               Library Change Readiness Assessment
             </h1>
             <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-paper-card/70">
-              A structured diagnostic for academic library leaders, built to show where a
-              specific change initiative is genuinely ready to move, and where it isn&rsquo;t.
+              A structured diagnostic for academic library leaders, built to show how ready a
+              specific change initiative is to move and where there might be readiness concerns
+              to confront.
             </p>
           </div>
         </div>
@@ -164,13 +176,20 @@ export default function AssessmentPage() {
                 Rate each statement for one specific change initiative, based on where things
                 actually stand today rather than where you intend them to be. Most items ask
                 whether you can name or point to something concrete, so &ldquo;Rarely true&rdquo;
-                is a normal and useful answer, and the items where you hesitate are the ones
-                worth bringing to the workshop. Where an item says &ldquo;we,&rdquo; read that as
-                you together with whoever shares leadership responsibility for this initiative,
-                which in a smaller library may be one or two colleagues. If a facilitator is
-                running this as part of a cohort, your responses save automatically when you
-                generate your summary.
+                is a normal and useful answer, not something you should be afraid of. Where an
+                item says &ldquo;we,&rdquo; read that as you together with whoever shares
+                leadership responsibility for this initiative, if anyone.
               </p>
+              {session ? (
+                <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-brass/40 bg-brass/10 px-3 py-1.5 text-[12px] font-medium text-brass-dark">
+                  Workshop session: {unslugify(session)}
+                  <span className="text-ink-faint">· your results save automatically to this session</span>
+                </div>
+              ) : (
+                <p className="mt-3 text-[12px] text-ink-faint">
+                  Your results save automatically when you generate your summary below.
+                </p>
+              )}
             </div>
             <div className="rounded-card border border-paper-rule bg-paper px-5 py-3 text-right">
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
@@ -195,7 +214,12 @@ export default function AssessmentPage() {
           </div>
 
           <label className="mt-4 block">
-            <div className="mb-1.5 text-[13px] font-semibold text-ink">Context notes</div>
+            <div className="mb-1.5 flex items-baseline justify-between gap-3">
+              <span className="text-[13px] font-semibold text-ink">Context notes</span>
+              <span className="text-[11.5px] font-normal text-ink-faint">
+                Optional. Prints with your results in the PDF summary.
+              </span>
+            </div>
             <textarea
               value={meta.notes}
               onChange={(e) => handleMetaChange("notes", e.target.value)}

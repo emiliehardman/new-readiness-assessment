@@ -11,6 +11,7 @@ type Row = {
   role: string | null;
   initiative: string | null;
   notes: string | null;
+  session: string | null;
   domain_scores: { id: string; short: string; average: number }[];
   aggregate_scores: Record<string, { title: string; average: number }>;
   overall: string;
@@ -18,19 +19,39 @@ type Row = {
 
 export async function POST(req: NextRequest) {
   try {
-    const { password } = await req.json();
+    const { password, session } = await req.json();
     if (!password || password !== getFacilitatorPassword()) {
       return NextResponse.json({ error: "Incorrect passcode." }, { status: 401 });
     }
 
     await ensureSchema();
     const sql = getSql();
-    const rows = (await sql`
-      SELECT id, created_at, participant, institution, role, initiative, notes,
-             domain_scores, aggregate_scores, overall
-      FROM submissions
-      ORDER BY created_at DESC
-    `) as Row[];
+
+    // Every session that has at least one submission, regardless of the
+    // current filter, so the dropdown always reflects everything available.
+    const sessionRows = (await sql`
+      SELECT DISTINCT session FROM submissions WHERE session IS NOT NULL ORDER BY session
+    `) as { session: string }[];
+    const availableSessions = sessionRows.map((r) => r.session);
+
+    const filterSession = typeof session === "string" && session.trim() ? session.trim() : null;
+
+    const rows = (
+      filterSession
+        ? await sql`
+            SELECT id, created_at, participant, institution, role, initiative, notes, session,
+                   domain_scores, aggregate_scores, overall
+            FROM submissions
+            WHERE session = ${filterSession}
+            ORDER BY created_at DESC
+          `
+        : await sql`
+            SELECT id, created_at, participant, institution, role, initiative, notes, session,
+                   domain_scores, aggregate_scores, overall
+            FROM submissions
+            ORDER BY created_at DESC
+          `
+    ) as Row[];
 
     const submissions = rows.map((r) => ({
       id: r.id,
@@ -40,6 +61,7 @@ export async function POST(req: NextRequest) {
       role: r.role,
       initiative: r.initiative,
       notes: r.notes,
+      session: r.session,
       domainScores: r.domain_scores,
       aggregateScores: r.aggregate_scores,
       overall: Number(r.overall),
@@ -81,6 +103,8 @@ export async function POST(req: NextRequest) {
       domainAverages,
       bucketAverages,
       submissions,
+      availableSessions,
+      activeSession: filterSession,
     });
   } catch (err) {
     console.error("Failed to load results:", err);

@@ -1,4 +1,5 @@
 import { domains } from "./domains";
+import { unslugify } from "./slug";
 
 type DomainScoreLite = { id: string; average: number };
 
@@ -10,6 +11,7 @@ type Submission = {
   role: string | null;
   initiative: string | null;
   overall: number;
+  session?: string | null;
   domainScores: DomainScoreLite[];
 };
 
@@ -24,6 +26,7 @@ function csvEscape(value: unknown): string {
 export function downloadSubmissionsCsv(submissions: Submission[]) {
   const headers = [
     "Submitted at",
+    "Session",
     "Participant",
     "Institution",
     "Role",
@@ -36,6 +39,7 @@ export function downloadSubmissionsCsv(submissions: Submission[]) {
     const domainMap = Object.fromEntries(s.domainScores.map((d) => [d.id, d.average]));
     return [
       new Date(s.createdAt).toISOString(),
+      s.session ? unslugify(s.session) : "",
       s.participant ?? "",
       s.institution ?? "",
       s.role ?? "",

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, RotateCcw, Download, Save, Lightbulb } from "lucide-react";
+import { ArrowUpRight, RotateCcw, Download, Save, Lightbulb, Compass } from "lucide-react";
 import { domains, SCALE } from "@/lib/domains";
 import {
   emptyResponses,
@@ -14,6 +14,8 @@ import {
   topPriorities,
   overallInterpretation,
   reflectionPrompts,
+  patternInsights,
+  bucketNarratives,
   getStatus,
   scoreToPercent,
   type Responses,
@@ -65,6 +67,7 @@ export default function AssessmentPage() {
   const aggregateScores = useMemo(() => computeAggregateScores(domainScores), [domainScores]);
   const interpretation = useMemo(() => overallInterpretation(overall), [overall]);
   const prompts = useMemo(() => reflectionPrompts(strengths, priorities), [strengths, priorities]);
+  const insights = useMemo(() => patternInsights(domainScores), [domainScores]);
 
   // Scroll the newly-rendered results section into view once it exists,
   // instead of jumping the page back to the top.
@@ -127,6 +130,7 @@ export default function AssessmentPage() {
       strengths,
       priorities,
       reflectionPrompts: prompts,
+      patternInsights: insights,
     });
   }
 
@@ -394,13 +398,52 @@ export default function AssessmentPage() {
                 <div className="mt-3">
                   <AggregateGrid aggregateScores={aggregateScores} wide />
                 </div>
-                <div className="mt-3.5 grid grid-cols-1 gap-x-6 gap-y-1 text-[11.5px] leading-relaxed text-ink-faint sm:grid-cols-2">
-                  <div><strong className="text-ink">Leadership</strong> = Leadership sponsorship + Communication.</div>
-                  <div><strong className="text-ink">Success</strong> = Strategic clarity + Sustainment.</div>
-                  <div><strong className="text-ink">Delivery</strong> = Area leads + Capacity.</div>
-                  <div><strong className="text-ink">Readiness</strong> = Staff readiness + Ethics &amp; risk.</div>
+                <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {(
+                    [
+                      ["leadership", "Leadership sponsorship + Communication"],
+                      ["success", "Strategic clarity + Sustainment"],
+                      ["delivery", "Area leads + Capacity"],
+                      ["readiness", "Staff readiness + Ethics & risk"],
+                    ] as const
+                  ).map(([key, composition]) => {
+                    const bucket = aggregateScores[key];
+                    const strong = bucket.average >= 2.5;
+                    const narrative = strong ? bucketNarratives[key].strong : bucketNarratives[key].attention;
+                    return (
+                      <div key={key} className="rounded-sm2 border border-paper-rule bg-white p-4">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <div className="text-[13.5px] font-semibold text-ink">{bucket.title}</div>
+                          <div className="text-[11px] text-ink-faint">{composition}</div>
+                        </div>
+                        <p className="mt-2 text-[12.5px] leading-relaxed text-ink-faint">{narrative}</p>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
+
+              {insights.length > 0 && (
+                <div className="mt-9">
+                  <h3 className="font-serif text-lg font-semibold text-ink">What this combination suggests</h3>
+                  <p className="mt-1 text-[13px] text-ink-faint">
+                    Patterns across two or more domains together, not just single scores in isolation.
+                  </p>
+                  <div className="mt-4 grid gap-3">
+                    {insights.map((insight, idx) => (
+                      <div key={idx} className="rounded-sm2 border border-brass/40 bg-white p-4">
+                        <div className="flex gap-2.5">
+                          <Compass size={16} className="mt-0.5 shrink-0 text-brass-dark" />
+                          <div>
+                            <div className="text-[14px] font-semibold text-ink">{insight.title}</div>
+                            <p className="mt-1.5 text-[13px] leading-relaxed text-ink-faint">{insight.body}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="mt-9 grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <div>
@@ -418,8 +461,15 @@ export default function AssessmentPage() {
                         >
                           <div className="flex items-center justify-between gap-3">
                             <div className="text-[14.5px] font-semibold text-ink">{d.short}</div>
-                            <div className="font-mono text-[14px] font-bold" style={{ color: STATUS_COLORS.green.text }}>
-                              {d.average.toFixed(2)}
+                            <div className="flex items-baseline gap-1.5">
+                              {strengths.filter((s) => s.average === d.average).length > 1 && (
+                                <span className="font-mono text-[9.5px] font-semibold uppercase tracking-wide text-ink-faint">
+                                  Tied
+                                </span>
+                              )}
+                              <div className="font-mono text-[14px] font-bold" style={{ color: STATUS_COLORS.green.text }}>
+                                {d.average.toFixed(2)}
+                              </div>
                             </div>
                           </div>
                           <div className="mt-3 flex gap-2 border-t border-status-green-border/60 pt-3">
@@ -451,8 +501,15 @@ export default function AssessmentPage() {
                         >
                           <div className="flex items-center justify-between gap-3">
                             <div className="text-[14.5px] font-semibold text-ink">{d.short}</div>
-                            <div className="font-mono text-[14px] font-bold" style={{ color: STATUS_COLORS.red.text }}>
-                              {d.average.toFixed(2)}
+                            <div className="flex items-baseline gap-1.5">
+                              {priorities.filter((p) => p.average === d.average).length > 1 && (
+                                <span className="font-mono text-[9.5px] font-semibold uppercase tracking-wide text-ink-faint">
+                                  Tied
+                                </span>
+                              )}
+                              <div className="font-mono text-[14px] font-bold" style={{ color: STATUS_COLORS.red.text }}>
+                                {d.average.toFixed(2)}
+                              </div>
                             </div>
                           </div>
                           <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-faint">{d.description}</p>

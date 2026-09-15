@@ -1,5 +1,5 @@
 import jsPDF from "jspdf";
-import { getStatus, type AggregateScores, type DomainScore } from "./scoring";
+import { getStatus, type AggregateScores, type DomainScore, type PatternInsight } from "./scoring";
 import { STATUS_COLORS } from "./statusColors";
 
 type Metadata = {
@@ -21,6 +21,7 @@ type ExportPayload = {
   strengths: DomainScore[];
   priorities: DomainScore[];
   reflectionPrompts: string[];
+  patternInsights: PatternInsight[];
 };
 
 const INK = "#16212F";
@@ -236,6 +237,29 @@ export function exportResultsPdf(payload: ExportPayload) {
     "Leadership combines leadership sponsorship and communication. Success combines strategic clarity and sustainment. Delivery combines area lead readiness and operational capacity. Readiness combines staff readiness and ethics and risk.",
     { color: INK_FAINT, fontSize: 9.5, lineHeight: 13, spacingAfter: 4 }
   );
+
+  // ---------- What this combination suggests ----------
+  if (payload.patternInsights.length) {
+    sectionHeader("What this combination suggests");
+    addWrappedText("Patterns across two or more domains together, not just single scores in isolation.", {
+      color: INK_FAINT,
+      fontSize: 9.5,
+      spacingAfter: 8,
+    });
+    payload.patternInsights.forEach((insight) => {
+      ensureSpace(30);
+      doc.setFont("times", "bold");
+      doc.setFontSize(11);
+      doc.setTextColor(INK);
+      const titleLines = doc.splitTextToSize(insight.title, maxWidth);
+      titleLines.forEach((line: string) => {
+        ensureSpace(15);
+        doc.text(line, margin, y);
+        y += 15;
+      });
+      addWrappedText(insight.body, { color: INK_FAINT, fontSize: 9.5, lineHeight: 13, spacingAfter: 10 });
+    });
+  }
 
   // ---------- Domain scores ----------
   sectionHeader("Domain scores");

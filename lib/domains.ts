@@ -158,7 +158,7 @@ export const domains: Domain[] = [
     strengthNote:
       "Keep revisiting this list as the initiative evolves. The risks you named at launch are rarely the ones that actually materialize six months in.",
     priorityNote:
-      "Name one risk you've been treating as unlikely enough to ignore, and ask a colleague whether they see it the same way you do.",
+      "Pick one risk you've quietly written off as unlikely, and ask a colleague for their honest take on it before you let it drop.",
   },
   {
     id: "reinforcement",

@@ -248,11 +248,11 @@ export function reflectionPrompts(
 
     if (tiedLowest.length > 1) {
       prompts.push(
-        `${label} are tied for your lowest score, not one clearly ahead of the other. What specifically made you hesitate on both, and have you said that out loud to anyone yet?`
+        `${label} are tied for your lowest score, not one clearly ahead of the other. Both are pointing at something specific that isn't happening yet. Pick whichever feels more urgent: what's the actual obstacle, and what would you need to do differently to change it?`
       );
     } else {
       prompts.push(
-        `Your lowest-scoring area is ${label}. What specifically made you hesitate on those items, and have you said that out loud to anyone yet?`
+        `Your lowest-scoring area is ${label}. That's not a close call, it's the data pointing at something specific that isn't happening yet. What's the actual obstacle, and what would you need to do differently to change it?`
       );
     }
 

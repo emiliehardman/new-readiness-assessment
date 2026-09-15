@@ -1,5 +1,11 @@
 import jsPDF from "jspdf";
-import { getStatus, type AggregateScores, type DomainScore, type PatternInsight } from "./scoring";
+import {
+  getStatus,
+  type AggregateScores,
+  type DomainScore,
+  type PatternInsight,
+  type ReflectionPrompt,
+} from "./scoring";
 import { STATUS_COLORS } from "./statusColors";
 
 type Metadata = {
@@ -20,7 +26,7 @@ type ExportPayload = {
   domainScores: (DomainScore & { status: string })[];
   strengths: DomainScore[];
   priorities: DomainScore[];
-  reflectionPrompts: string[];
+  reflectionPrompts: ReflectionPrompt[];
   patternInsights: PatternInsight[];
 };
 
@@ -343,7 +349,13 @@ export function exportResultsPdf(payload: ExportPayload) {
   sectionHeader("Reflection prompts");
   if (payload.reflectionPrompts.length) {
     payload.reflectionPrompts.forEach((prompt) => {
-      addWrappedText(`•  ${prompt}`, { color: INK_FAINT, spacingAfter: 4 });
+      ensureSpace(28);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8.5);
+      doc.setTextColor("#8F6B2B");
+      doc.text(prompt.label.toUpperCase(), margin, y);
+      y += 13;
+      addWrappedText(prompt.question, { color: INK_FAINT, spacingAfter: 8 });
     });
   } else {
     addWrappedText("None generated", { color: INK_FAINT });

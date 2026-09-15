@@ -9,6 +9,11 @@ export type Domain = {
   // strength or a priority. Written as one concrete move, not a platitude.
   strengthNote: string;
   priorityNote: string;
+  // A discussion question specific to this domain's substance, used in the
+  // results view and workshop debrief. Deliberately not a template with the
+  // domain name dropped in; each one is written to mean something on its
+  // own, testable by reading it without knowing which domain it's from.
+  reflectionPrompt: string;
 };
 
 export const SCALE = [
@@ -63,6 +68,8 @@ export const domains: Domain[] = [
       "Keep testing this by asking staff to describe the change back to you in their own words. Clarity erodes gradually and is easy to miss once you've stopped explaining.",
     priorityNote:
       "Before your next communication about this, write the non-negotiable parts down in one sentence and say that sentence out loud to your team, word for word.",
+    reflectionPrompt:
+      "If someone challenged the case for this change in front of the whole staff, could you defend it convincingly on the spot, or would you need time to prepare an answer?",
   },
   {
     id: "sponsorship",
@@ -79,6 +86,8 @@ export const domains: Domain[] = [
       "Your visible follow-through is buying you credibility. Spend some of it on the harder call you've been deferring, rather than banking it.",
     priorityNote:
       "Name one decision on this initiative that has sat unmade for more than two weeks. Either make it this week, or set a firm date by which you will.",
+    reflectionPrompt:
+      "Think of the last decision on this initiative that took longer than it should have. What actually caused the delay, and was it really about needing more information?",
   },
   {
     id: "communication",
@@ -95,6 +104,8 @@ export const domains: Domain[] = [
       "Keep going back to the same handful of staff for an honest read, not just the ones who tell you things are going well.",
     priorityNote:
       "This week, ask one staff member outside your usual circle what they think is happening with this change, and compare their answer to what you've actually said.",
+    reflectionPrompt:
+      "If you asked five staff members privately what they think is really going on with this change, how much would their answers disagree with each other, and with what you've told them?",
   },
   {
     id: "managers",
@@ -111,6 +122,8 @@ export const domains: Domain[] = [
       "Tell your area leads directly that backing them through friction is deliberate, not incidental. That's what keeps them bringing you the hard stuff instead of managing around you.",
     priorityNote:
       "Sit in on how one area lead is handling pushback this month. Ask what support would actually help before assuming you already know.",
+    reflectionPrompt:
+      "When was the last time an area lead pushed back on you about this change? What happened, and would they describe that conversation the same way you would?",
   },
   {
     id: "staff",
@@ -127,6 +140,8 @@ export const domains: Domain[] = [
       "Revisit this after the initial rollout excitement fades. Readiness measured early in a change often looks stronger than readiness measured under real ongoing workload.",
     priorityNote:
       "Identify the two or three staff carrying the most implementation weight, and ask them directly what is standing in their way this week.",
+    reflectionPrompt:
+      "Whose daily work changes the most because of this initiative, and when did you last hear directly from them, not through their manager, about how it's actually going?",
   },
   {
     id: "capacity",
@@ -143,6 +158,8 @@ export const domains: Domain[] = [
       "Use this credibility now to build in slack for the next phase, before the schedule tightens and there's no room left to ask for it.",
     priorityNote:
       "Draft the specific ask you've been putting off, whether that's money, time, or a position, even if you aren't ready to send it yet. A written draft is easier to act on than a vague intention.",
+    reflectionPrompt:
+      "If this initiative ran into a serious staffing or budget problem tomorrow, do you already know what you'd ask for and from whom, or would you be figuring that out for the first time?",
   },
   {
     id: "ethics",
@@ -159,6 +176,8 @@ export const domains: Domain[] = [
       "Keep revisiting this list as the initiative evolves. The risks you named at launch are rarely the ones that actually materialize six months in.",
     priorityNote:
       "Pick one risk you've quietly written off as unlikely, and ask a colleague for their honest take on it before you let it drop.",
+    reflectionPrompt:
+      "What's the version of this initiative going wrong that you haven't let yourself fully imagine yet, and who would be affected first?",
   },
   {
     id: "reinforcement",
@@ -175,6 +194,8 @@ export const domains: Domain[] = [
       "Put your reinforcement plan in writing now, while it still has momentum, so it survives your own attention moving on to the next thing.",
     priorityNote:
       "Set one recurring date, even just monthly, where a specific person is accountable for checking whether this change is actually holding.",
+    reflectionPrompt:
+      "If you left your role tomorrow, would this change keep going the way it's supposed to, or would it depend on you personally to hold it together?",
   },
 ];
 

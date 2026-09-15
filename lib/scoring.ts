@@ -9,6 +9,7 @@ export type DomainScore = {
   description: string;
   strengthNote: string;
   priorityNote: string;
+  reflectionPrompt: string;
   average: number;
 };
 
@@ -90,6 +91,7 @@ export function computeDomainScores(responses: Responses): DomainScore[] {
       description: domain.description,
       strengthNote: domain.strengthNote,
       priorityNote: domain.priorityNote,
+      reflectionPrompt: domain.reflectionPrompt,
       average,
     };
   });
@@ -161,14 +163,62 @@ export function overallInterpretation(overall: number): string {
   return "Several foundations for this change are not yet solid. This is a common and workable place to be early on, but the lower-scoring domains below point to work worth doing before implementation accelerates, particularly anything involving clarity, capacity, or what staff currently understand.";
 }
 
-function joinNames(names: string[]): string {
-  const lower = names.map((n) => n.toLowerCase());
-  if (lower.length === 1) return lower[0];
-  if (lower.length === 2) return `${lower[0]} and ${lower[1]}`;
-  return `${lower.slice(0, -1).join(", ")}, and ${lower[lower.length - 1]}`;
-}
+export type ReflectionPrompt = { label: string; question: string };
 
-export type PatternInsight = { title: string; body: string };
+// Every prompt is labeled and specific, never a template with a domain name
+// dropped in. When domains tie for lowest or highest, each tied domain gets
+// its own labeled question rather than forcing them into one merged
+// sentence, which is what produced confusing or hollow phrasing before.
+export function reflectionPrompts(
+  strengths: DomainScore[],
+  priorities: DomainScore[]
+): ReflectionPrompt[] {
+  const prompts: ReflectionPrompt[] = [];
+
+  // Only meaningful when there's an actual highest/lowest distinction. If
+  // every domain landed on the same average, "lowest" and "highest" are the
+  // same domains, and singling any out would be false precision.
+  const hasSpread = Boolean(
+    strengths[0] && priorities[0] && strengths[0].average > priorities[0].average
+  );
+
+  if (hasSpread && priorities.length) {
+    const lowestValue = priorities[0].average;
+    priorities
+      .filter((p) => p.average === lowestValue)
+      .slice(0, 2)
+      .forEach((domain) => {
+        prompts.push({ label: domain.short, question: domain.reflectionPrompt });
+      });
+  }
+
+  if (hasSpread && strengths.length) {
+    const highestValue = strengths[0].average;
+    strengths
+      .filter((s) => s.average === highestValue)
+      .slice(0, 2)
+      .forEach((domain) => {
+        // Skip a domain already shown above as a priority (only possible in
+        // unusual score distributions where the lists briefly overlap).
+        if (!prompts.some((p) => p.label === domain.short)) {
+          prompts.push({ label: domain.short, question: domain.reflectionPrompt });
+        }
+      });
+  }
+
+  prompts.push({
+    label: "Resourcing",
+    question:
+      "What would you need to ask for, and of whom, to give this initiative the conditions it actually requires? What has stopped you from asking?",
+  });
+  prompts.push({
+    label: "Avoidance",
+    question:
+      "Where in this change are you avoiding a conversation, a decision, or a person, and what would it take to stop avoiding it?",
+  });
+
+  return prompts.slice(0, 6);
+}
 
 // Looks at combinations of domain scores rather than domains in isolation.
 // A single low score is a gap; two specific domains landing a certain way
@@ -177,6 +227,8 @@ export type PatternInsight = { title: string; body: string };
 // library change efforts, particularly at smaller, leaner institutions.
 // Only runs once every domain has been scored, and returns at most two
 // matches so a director isn't handed a wall of diagnosis.
+export type PatternInsight = { title: string; body: string };
+
 export function patternInsights(domainScores: DomainScore[]): PatternInsight[] {
   if (!domainScores.length || domainScores.some((d) => d.average === 0)) return [];
 
@@ -233,63 +285,4 @@ export function patternInsights(domainScores: DomainScore[]): PatternInsight[] {
   }
 
   return insights.slice(0, 2);
-}
-
-export function reflectionPrompts(
-  strengths: DomainScore[],
-  priorities: DomainScore[]
-): string[] {
-  const prompts: string[] = [];
-
-  if (priorities.length) {
-    const lowestValue = priorities[0].average;
-    const tiedLowest = priorities.filter((p) => p.average === lowestValue);
-    const label = joinNames(tiedLowest.map((d) => d.short));
-
-    if (tiedLowest.length > 1) {
-      prompts.push(
-        `${label} are tied for your lowest score, not one clearly ahead of the other. Both are pointing at something specific that isn't happening yet. Pick whichever feels more urgent: what's the actual obstacle, and what would you need to do differently to change it?`
-      );
-    } else {
-      prompts.push(
-        `Your lowest-scoring area is ${label}. That's not a close call, it's the data pointing at something specific that isn't happening yet. What's the actual obstacle, and what would you need to do differently to change it?`
-      );
-    }
-
-    const nextPriority = priorities.find((p) => p.average > lowestValue);
-    if (nextPriority) {
-      prompts.push(
-        `If ${nextPriority.short.toLowerCase()} does not improve, what is the first thing that would go wrong, and who would notice it first?`
-      );
-    } else if (tiedLowest.length > 1) {
-      prompts.push(
-        `Between the tied areas above, where would you personally start first, and what makes that one more urgent than the other right now?`
-      );
-    }
-  }
-
-  if (strengths.length) {
-    const highestValue = strengths[0].average;
-    const tiedHighest = strengths.filter((s) => s.average === highestValue);
-    const label = joinNames(tiedHighest.map((d) => d.short));
-
-    if (tiedHighest.length > 1) {
-      prompts.push(
-        `You scored highest on ${label}, tied together. What evidence do you have for that beyond your own vantage point, and would your staff rate both the same way?`
-      );
-    } else {
-      prompts.push(
-        `You scored highest on ${label}. What evidence do you have for that beyond your own vantage point, and would your staff rate it the same way?`
-      );
-    }
-  }
-
-  prompts.push(
-    "What would you need to ask for, and of whom, to give this initiative the conditions it actually requires? What has stopped you from asking?"
-  );
-  prompts.push(
-    "Where in this change are you avoiding a conversation, a decision, or a person, and what would it take to stop avoiding it?"
-  );
-
-  return prompts.slice(0, 5);
 }

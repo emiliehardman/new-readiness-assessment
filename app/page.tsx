@@ -555,18 +555,18 @@ export default function AssessmentPage() {
               <div className="mt-9 rounded-sm2 border border-paper-rule bg-white p-5">
                 <h3 className="font-serif text-lg font-semibold text-ink">Reflection prompts</h3>
                 <p className="mt-1 text-[13px] text-ink-faint">
-                  Good starting points for a workshop discussion or a conversation with your own team.
+                  Good starting points for a discussion with your peers or a conversation with your own team.
                 </p>
-                <ol className="mt-4 grid gap-3 text-[14px] leading-relaxed text-ink">
+                <div className="mt-4 grid gap-3">
                   {prompts.map((prompt, idx) => (
-                    <li key={idx} className="flex gap-3">
-                      <span className="font-mono text-[13px] font-semibold text-brass-dark">
-                        {String(idx + 1).padStart(2, "0")}
-                      </span>
-                      <span>{prompt}</span>
-                    </li>
+                    <div key={idx} className="rounded-sm2 border border-paper-rule bg-paper p-3.5">
+                      <div className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.1em] text-brass-dark">
+                        {prompt.label}
+                      </div>
+                      <div className="mt-1 text-[14px] leading-relaxed text-ink">{prompt.question}</div>
+                    </div>
                   ))}
-                </ol>
+                </div>
               </div>
             </section>
           </div>

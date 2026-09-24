@@ -160,7 +160,7 @@ export default function AssessmentPage() {
             <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-paper-card/70">
               A structured diagnostic for academic library leaders, built to show how ready a
               specific change initiative is to move and where there might be readiness concerns
-              to confront. Created for the American University, Hofstra University and JSTOR Stewardship hosted Change Management Workshop, October 2026, by Emilie Hardman.
+              to confront. Created for the JSTOR Stewardship, Hofstra and American University hosted Change Management Workshop (October 2026) by Emilie Hardman.
             </p>
           </div>
         </div>

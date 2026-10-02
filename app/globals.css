@@ -7,17 +7,29 @@ html {
 }
 
 body {
-  background-color: #f1efe6;
+  background-color: #eef2f2;
 }
 
 ::selection {
-  background-color: #e4ce9c;
-  color: #16212f;
+  background-color: #f6b8a3;
+  color: #0e3b43;
 }
 
+/* Two-tone focus ring: the vermilion outline reads on the light page
+   (5.3:1 against mist), the white halo reads on the dark petrol header. */
 :focus-visible {
-  outline: 2px solid #b68a3b;
+  outline: 3px solid #b23a16;
   outline-offset: 2px;
+  box-shadow: 0 0 0 2px #ffffff;
+}
+
+/* Input placeholders are styled at 60% opacity in the page markup, which
+   measures 2.6:1 against white, below the 4.5:1 AA minimum. This
+   restores full opacity (6.1:1) from here, so the page files didn't need
+   to change. */
+::placeholder {
+  color: #4a6670 !important;
+  opacity: 1 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -31,16 +43,13 @@ body {
   }
 }
 
-/* Faint horizontal rule texture used behind the hero, evoking ruled
-   ledger paper without leaning on a literal skeuomorphic scan. */
+/* Blueprint grid behind the header, replacing the original horizontal
+   ledger lines. The class name is kept so the page markup didn't change. */
 .ruled-bg {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    rgba(22, 33, 47, 0.05) 0px,
-    rgba(22, 33, 47, 0.05) 1px,
-    transparent 1px,
-    transparent 34px
-  );
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
 @media print {

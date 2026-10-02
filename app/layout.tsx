@@ -1,24 +1,28 @@
 import type { Metadata } from "next";
-import { Source_Serif_4, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Space_Grotesk, Public_Sans, Space_Mono } from "next/font/google";
 import "./globals.css";
 
-const display = Source_Serif_4({
+// Geometric sans for headings (Space Grotesk) in place of the original
+// serif, which is the single biggest visual separation from the companion
+// Leadership Capacity app's italic serif headings. Public Sans for body,
+// a typeface designed for civic and public-sector use; Space Mono for the
+// small labels, matched to the heading family.
+const display = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-display",
   weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
 });
 
-const body = IBM_Plex_Sans({
+const body = Public_Sans({
   subsets: ["latin"],
   variable: "--font-body",
   weight: ["400", "500", "600", "700"],
 });
 
-const mono = IBM_Plex_Mono({
+const mono = Space_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
-  weight: ["400", "500", "600"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {

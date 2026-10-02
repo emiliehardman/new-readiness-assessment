@@ -1,6 +1,13 @@
 import { getStatus } from "@/lib/scoring";
 import { STATUS_COLORS } from "@/lib/statusColors";
 
+// A diamond marker, chosen to read as distinct at a glance from the
+// companion Leadership Capacity app's soft ring. Status is carried by
+// both the symbol and the text label, never by color alone.
+//
+// The wrapper sizes to its content rather than to the diamond's width:
+// labels like "HIGH RISK" are wider than a small 42px marker and can't
+// wrap, so pinning the width would clip or spill them.
 export default function StampBadge({
   score,
   size = 64,
@@ -11,14 +18,15 @@ export default function StampBadge({
   if (!score) {
     const c = STATUS_COLORS.neutral;
     return (
-      <div className="text-center" style={{ width: size }}>
+      <div className="inline-flex flex-col items-center">
         <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true">
-          <g transform="rotate(-6 50 50)">
-            <circle cx="50" cy="50" r="42" fill="none" stroke={c.border} strokeWidth="2.5" />
-            <circle cx="50" cy="50" r="34" fill="none" stroke={c.border} strokeWidth="1" strokeDasharray="2 3" />
-          </g>
+          <rect
+            x="22" y="22" width="56" height="56"
+            transform="rotate(45 50 50)"
+            fill="none" stroke={c.border} strokeWidth="3" strokeDasharray="4 4"
+          />
         </svg>
-        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em]" style={{ color: c.text }}>
+        <div className="whitespace-nowrap font-mono text-[11.5px] font-bold uppercase tracking-[0.12em]" style={{ color: c.text }}>
           Pending
         </div>
       </div>
@@ -30,25 +38,24 @@ export default function StampBadge({
   const symbol = status.key === "green" ? "✓" : status.key === "amber" ? "~" : "!";
 
   return (
-    <div className="text-center" style={{ width: size }}>
+    <div className="inline-flex flex-col items-center">
       <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true">
-        <g transform="rotate(-6 50 50)">
-          <circle cx="50" cy="50" r="42" fill="none" stroke={c.fill} strokeWidth="2.5" />
-          <circle cx="50" cy="50" r="34" fill="none" stroke={c.fill} strokeWidth="1" strokeDasharray="1.5 3" opacity="0.8" />
-          <text
-            x="50"
-            y="62"
-            textAnchor="middle"
-            fontSize="30"
-            fontWeight="700"
-            fill={c.fill}
-            fontFamily="var(--font-display)"
-          >
-            {symbol}
-          </text>
-        </g>
+        <rect
+          x="22" y="22" width="56" height="56"
+          transform="rotate(45 50 50)"
+          fill={c.bg} stroke={c.fill} strokeWidth="4"
+        />
+        <text
+          x="50" y="61"
+          textAnchor="middle"
+          fontSize="30" fontWeight="700"
+          fill={c.text}
+          fontFamily="var(--font-display)"
+        >
+          {symbol}
+        </text>
       </svg>
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em]" style={{ color: c.text }}>
+      <div className="whitespace-nowrap font-mono text-[11.5px] font-bold uppercase tracking-[0.12em]" style={{ color: c.text }}>
         {status.label}
       </div>
     </div>

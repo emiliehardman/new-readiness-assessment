@@ -30,13 +30,13 @@ type ExportPayload = {
   patternInsights: PatternInsight[];
 };
 
-const INK = "#16212F";
-const INK_FAINT = "#4A5A6C";
-const PAPER_CARD = "#FBFAF5";
-const PAPER = "#F1EFE6";
-const PAPER_RULE = "#D8D3C4";
-const BRASS = "#B68A3B";
-const BRASS_LIGHT = "#E4CE9C";
+const INK = "#0E3B43";
+const INK_FAINT = "#4A6670";
+const PAPER_CARD = "#FFFFFF";
+const PAPER = "#EEF2F2";
+const PAPER_RULE = "#CFD8DA";
+const BRASS = "#E4572E";
+const BRASS_LIGHT = "#F6B8A3";
 
 export function exportResultsPdf(payload: ExportPayload) {
   const doc = new jsPDF({ unit: "pt", format: "letter" });
@@ -103,7 +103,7 @@ export function exportResultsPdf(payload: ExportPayload) {
     y += spacingBefore;
     doc.setFillColor(BRASS);
     doc.rect(margin, y - 10, 3.5, 14, "F");
-    doc.setFont("times", "bold");
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.setTextColor(INK);
     doc.text(title, margin + 12, y);
@@ -140,13 +140,13 @@ export function exportResultsPdf(payload: ExportPayload) {
   doc.setFontSize(9);
   doc.setTextColor(BRASS_LIGHT);
   doc.text("CHANGE MANAGEMENT WORKSHOP INSTRUMENT", margin, 36);
-  doc.setFont("times", "bold");
+  doc.setFont("helvetica", "bold");
   doc.setFontSize(23);
   doc.setTextColor(PAPER_CARD);
   doc.text("Library Change Readiness Assessment", margin, 64);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
-  doc.setTextColor("#C9D0D8");
+  doc.setTextColor("#B7C7CA");
   const completedDate = new Date(payload.completedAt).toLocaleDateString(undefined, {
     year: "numeric",
     month: "long",
@@ -191,7 +191,7 @@ export function exportResultsPdf(payload: ExportPayload) {
   // ---------- Overall interpretation ----------
   sectionHeader("Overall interpretation");
   const overallLabel = payload.overallScore ? payload.overallScore.toFixed(2) : "Not available";
-  doc.setFont("times", "bold");
+  doc.setFont("helvetica", "bold");
   doc.setFontSize(30);
   doc.setTextColor(INK);
   ensureSpace(40);
@@ -229,7 +229,7 @@ export function exportResultsPdf(payload: ExportPayload) {
     doc.setFontSize(9.5);
     doc.setTextColor(INK);
     doc.text(label.toUpperCase(), x + 14, yBox + 20);
-    doc.setFont("times", "bold");
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(20);
     doc.text(value ? value.toFixed(2) : "—", x + 14, yBox + 44);
     doc.setFont("helvetica", "bold");
@@ -254,7 +254,7 @@ export function exportResultsPdf(payload: ExportPayload) {
     });
     payload.patternInsights.forEach((insight) => {
       ensureSpace(30);
-      doc.setFont("times", "bold");
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(11);
       doc.setTextColor(INK);
       const titleLines = doc.splitTextToSize(insight.title, maxWidth);
@@ -353,7 +353,7 @@ export function exportResultsPdf(payload: ExportPayload) {
       ensureSpace(28);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(8.5);
-      doc.setTextColor("#8F6B2B");
+      doc.setTextColor("#B23A16");
       doc.text(prompt.label.toUpperCase(), margin, y);
       y += 13;
       addWrappedText(prompt.question, { color: INK_FAINT, spacingAfter: 8 });

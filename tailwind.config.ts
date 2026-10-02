@@ -1,5 +1,16 @@
 import type { Config } from "tailwindcss";
 
+// Visual identity: "civic blueprint." Deliberately the opposite of the
+// companion Leadership Capacity app on every axis people notice at a
+// glance: cool mist and white instead of warm cream, a petrol-teal
+// header with a grid pattern instead of muted dusk, a geometric sans for
+// headings instead of italic serif, crisp near-square corners instead of
+// soft rounding, and crisp saturated status colors instead of earthy ones.
+//
+// Token NAMES are unchanged from the original theme (ink, paper, brass,
+// oxblood, status.*) so no page markup had to change; only their values
+// did. "brass" is now a vermilion accent, kept under its old name for
+// that reason.
 const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,50 +20,50 @@ const config: Config = {
     extend: {
       colors: {
         ink: {
-          DEFAULT: "#16212F",
-          light: "#29394B",
-          faint: "#4A5A6C",
+          DEFAULT: "#0E3B43",
+          light: "#1C5560",
+          faint: "#4A6670",
         },
         paper: {
-          DEFAULT: "#F1EFE6",
-          card: "#FBFAF5",
-          rule: "#D8D3C4",
+          DEFAULT: "#EEF2F2",
+          card: "#FFFFFF",
+          rule: "#CFD8DA",
         },
         brass: {
-          DEFAULT: "#B68A3B",
-          dark: "#8F6B2B",
-          light: "#E4CE9C",
+          DEFAULT: "#E4572E",
+          dark: "#B23A16",
+          light: "#F6B8A3",
         },
         oxblood: {
-          DEFAULT: "#7A2E2A",
-          light: "#A64438",
+          DEFAULT: "#8E231B",
+          light: "#C8372D",
         },
         status: {
-          green: "#5B7F3A",
-          "green-bg": "#EEF3E7",
-          "green-border": "#C9D9B4",
-          "green-text": "#3F5E27",
-          amber: "#C08A2E",
-          "amber-bg": "#FBF3E1",
-          "amber-border": "#E8CE95",
-          "amber-text": "#8A5A12",
-          red: "#A64438",
-          "red-bg": "#F7E9E6",
-          "red-border": "#E3B8AE",
-          "red-text": "#7A2E2A",
+          green: "#1B7F5C",
+          "green-bg": "#E3F3EC",
+          "green-border": "#9FD3BC",
+          "green-text": "#12583F",
+          amber: "#D97706",
+          "amber-bg": "#FDF0DC",
+          "amber-border": "#F2C98B",
+          "amber-text": "#8A4B04",
+          red: "#C8372D",
+          "red-bg": "#FBE6E3",
+          "red-border": "#EFADA5",
+          "red-text": "#8E231B",
         },
       },
       fontFamily: {
-        serif: ["var(--font-display)", "Georgia", "serif"],
+        serif: ["var(--font-display)", "system-ui", "sans-serif"],
         sans: ["var(--font-body)", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       borderRadius: {
-        card: "10px",
-        sm2: "6px",
+        card: "4px",
+        sm2: "2px",
       },
       boxShadow: {
-        paper: "0 1px 2px rgba(22,33,47,0.06), 0 1px 0 rgba(22,33,47,0.04)",
+        paper: "0 1px 0 rgba(14,59,67,0.08), 0 2px 6px rgba(14,59,67,0.05)",
       },
     },
   },

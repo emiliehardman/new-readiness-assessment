@@ -1,16 +1,5 @@
 import type { Config } from "tailwindcss";
 
-// Visual identity: "civic blueprint." Deliberately the opposite of the
-// companion Leadership Capacity app on every axis people notice at a
-// glance: cool mist and white instead of warm cream, a petrol-teal
-// header with a grid pattern instead of muted dusk, a geometric sans for
-// headings instead of italic serif, crisp near-square corners instead of
-// soft rounding, and crisp saturated status colors instead of earthy ones.
-//
-// Token NAMES are unchanged from the original theme (ink, paper, brass,
-// oxblood, status.*) so no page markup had to change; only their values
-// did. "brass" is now a vermilion accent, kept under its old name for
-// that reason.
 const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -20,23 +9,23 @@ const config: Config = {
     extend: {
       colors: {
         ink: {
-          DEFAULT: "#0E3B43",
-          light: "#1C5560",
-          faint: "#4A6670",
+          DEFAULT: "#173B40",
+          light: "#24545A",
+          faint: "#5C7073",
         },
         paper: {
-          DEFAULT: "#EEF2F2",
+          DEFAULT: "#F5F7F6",
           card: "#FFFFFF",
-          rule: "#CFD8DA",
+          rule: "#D9E0DE",
         },
         brass: {
-          DEFAULT: "#E4572E",
-          dark: "#B23A16",
-          light: "#F6B8A3",
+          DEFAULT: "#B6634F",
+          dark: "#95503F",
+          light: "#E8C8BF",
         },
         oxblood: {
-          DEFAULT: "#8E231B",
-          light: "#C8372D",
+          DEFAULT: "#8E352D",
+          light: "#B94D43",
         },
         status: {
           green: "#1B7F5C",
@@ -54,16 +43,16 @@ const config: Config = {
         },
       },
       fontFamily: {
-        serif: ["var(--font-display)", "system-ui", "sans-serif"],
+        serif: ["var(--font-body)", "system-ui", "sans-serif"],
         sans: ["var(--font-body)", "system-ui", "sans-serif"],
-        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
+        mono: ["var(--font-body)", "system-ui", "sans-serif"],
       },
       borderRadius: {
-        card: "4px",
-        sm2: "2px",
+        card: "10px",
+        sm2: "7px",
       },
       boxShadow: {
-        paper: "0 1px 0 rgba(14,59,67,0.08), 0 2px 6px rgba(14,59,67,0.05)",
+        paper: "0 1px 2px rgba(23,59,64,0.04), 0 8px 24px rgba(23,59,64,0.035)",
       },
     },
   },

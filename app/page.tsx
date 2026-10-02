@@ -148,16 +148,16 @@ export default function AssessmentPage() {
   return (
     <div className="min-h-screen">
       {/* Hero band */}
-      <header className="ruled-bg bg-ink px-6 pb-16 pt-10 text-paper-card">
+      <header className="bg-ink px-6 py-9 text-paper-card sm:py-10">
         <div className="mx-auto flex max-w-6xl items-start justify-between gap-6">
           <div>
-            <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-brass-light">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-paper-card/65">
               Change management workshop instrument
             </div>
-            <h1 className="mt-3 max-w-2xl font-serif text-4xl font-semibold leading-[1.1] text-paper-card sm:text-5xl">
+            <h1 className="mt-3 max-w-3xl font-serif text-[2.4rem] font-semibold leading-[1.08] tracking-[-0.03em] text-paper-card sm:text-[3rem]">
               Library Change Readiness Assessment
             </h1>
-            <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-paper-card/70">
+            <p className="mt-5 max-w-2xl text-[16px] leading-7 text-paper-card/75">
               A structured diagnostic for academic library leaders, built to show how ready a
               specific change initiative is to move and where there might be readiness concerns
               to confront. Created for the JSTOR Stewardship, Hofstra and American University hosted Change Management Workshop (October 2026) by Emilie Hardman.
@@ -166,9 +166,9 @@ export default function AssessmentPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-6xl px-6 pb-24">
+      <div className="mx-auto max-w-6xl px-6 pb-24 pt-8">
         {/* Overlapping intro card */}
-        <section className="-mt-10 rounded-card border border-paper-rule bg-paper-card p-7 shadow-paper sm:p-8">
+        <section className="rounded-card border border-paper-rule bg-paper-card p-7 shadow-paper sm:p-8">
           <div className="flex flex-wrap items-start justify-between gap-6">
             <div className="max-w-2xl">
               <h2 className="font-serif text-xl font-semibold text-ink">Before you begin</h2>
@@ -191,8 +191,8 @@ export default function AssessmentPage() {
                 </p>
               )}
             </div>
-            <div className="rounded-card border border-paper-rule bg-paper px-5 py-3 text-right">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
+            <div className="min-w-[132px] border-l border-paper-rule pl-5 text-right">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-faint">
                 Completion
               </div>
               <div className="font-serif text-3xl font-semibold text-ink">{completion}%</div>
@@ -229,7 +229,7 @@ export default function AssessmentPage() {
             />
           </label>
 
-          <div className="mt-6 rounded-card border border-paper-rule bg-paper p-5">
+          <div className="mt-6 border-t border-paper-rule pt-5">
             <div className="font-serif text-[15px] font-semibold text-ink">How to read your scores</div>
             <p className="mt-2 text-[13.5px] leading-relaxed text-ink-faint">
               Each statement is scored 1–3. Domain and bucket averages are interpreted against
@@ -270,11 +270,11 @@ export default function AssessmentPage() {
                 <p className="mt-2 text-[13.5px] leading-relaxed text-ink-faint">
                   {domain.description}
                 </p>
-                <div className="mt-5 grid gap-4">
+                <div className="mt-4 grid gap-0">
                   {domain.items.map((item, idx) => {
                     const key = `${domain.id}-${idx}`;
                     return (
-                      <div key={key} className="rounded-sm2 border border-paper-rule bg-white p-4 sm:p-5">
+                      <div key={key} className="border-t border-paper-rule py-5 first:border-t-0">
                         <div className="flex gap-3 text-[14.5px] font-medium leading-relaxed text-ink">
                           <span className="font-mono text-[13px] text-brass-dark">
                             {String(idx + 1).padStart(2, "0")}
@@ -291,8 +291,8 @@ export default function AssessmentPage() {
                                 onClick={() => handleSelect(key, option.value)}
                                 className={`rounded-sm2 border px-3.5 py-2.5 text-left text-[13.5px] font-semibold transition ${
                                   active
-                                    ? "border-ink bg-ink text-paper-card"
-                                    : "border-paper-rule bg-paper text-ink hover:border-ink-faint"
+                                    ? "border-ink bg-ink text-paper-card shadow-sm"
+                                    : "border-paper-rule bg-white text-ink hover:border-ink-faint hover:bg-paper"
                                 }`}
                               >
                                 {option.label}
@@ -576,7 +576,7 @@ export default function AssessmentPage() {
 
       <Link
         href="/facilitator"
-        className="no-print fixed bottom-5 right-5 z-10 inline-flex items-center gap-1.5 rounded-full border border-paper-rule bg-paper-card/95 px-3.5 py-2 text-[12.5px] font-medium text-ink-faint shadow-paper backdrop-blur transition hover:border-ink-faint hover:text-ink"
+        className="no-print fixed bottom-5 right-5 z-10 inline-flex items-center gap-1.5 rounded-card border border-paper-rule bg-paper-card/95 px-3.5 py-2 text-[12.5px] font-medium text-ink-faint shadow-paper backdrop-blur transition hover:border-ink-faint hover:text-ink"
       >
         Facilitator view
         <ArrowUpRight size={13} />

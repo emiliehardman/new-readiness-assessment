@@ -42,13 +42,13 @@ export const bucketNarratives: Record<
     strong:
       "The case for this change is landing, and there's a real plan to keep attention on it after launch, the combination that predicts whether it becomes permanent practice rather than a memory.",
     attention:
-      "Either the case for this change isn't fully landing, or nothing is planned to keep it alive after the initial push. Initiatives that score low here often look successful at kickoff and quietly fade within a year, especially grant-funded or pilot work.",
+      "Either the case for this change isn't fully landing, or nothing is planned to keep it alive after the initial push. Initiatives that score low here often look successful at kickoff and then fade within a year, especially grant-funded or pilot work.",
   },
   delivery: {
     strong:
       "Area leads have real authority and the staffing math is realistic, so implementation is more likely to hold up under actual workload rather than good intentions alone.",
     attention:
-      "Area leads may be trying to carry this change without enough authority, staffing, or time, especially if they're also doing frontline work themselves. This is where good ideas most often quietly stall in smaller academic libraries.",
+      "Area leads may be trying to carry this change without enough authority, staffing, or time, especially if they're also doing frontline work themselves. This is where good ideas most often stall in smaller academic libraries.",
   },
   readiness: {
     strong:
@@ -241,7 +241,7 @@ export function patternInsights(domainScores: DomainScore[]): PatternInsight[] {
   if (isGreen("strategic") && isRed("reinforcement")) {
     insights.push({
       title: "A strong launch with no plan to keep it alive",
-      body: "The case for this change is landing, but there's no real plan for what happens after the initial push. This is a familiar pattern with grant-funded pilots and one-off initiatives in academic libraries: strong at kickoff, then quietly fading within a year once attention moves elsewhere. Naming who owns this after launch, even informally, is likely the single highest-leverage fix available here.",
+      body: "The case for this change is landing, but there's no real plan for what happens after the initial push. This is a familiar pattern with grant-funded pilots and one-off initiatives in academic libraries: strong at kickoff, then fading within a year once attention moves elsewhere. Naming who owns this after launch, even informally, is likely the single highest-leverage fix available here.",
     });
   }
 
@@ -255,7 +255,7 @@ export function patternInsights(domainScores: DomainScore[]): PatternInsight[] {
   if (isRed("ethics") && (isRed("staff") || isRed("managers"))) {
     insights.push({
       title: "Risk sitting with the people least able to manage it",
-      body: "Risk isn't yet being actively owned by leadership, and the people closest to the work, staff or area leads, are also showing strain. Left alone, these two gaps tend to compound: unmanaged risk quietly becomes frontline staff's problem to absorb, whether that's fielding upset patrons, handling a privacy concern, or covering a gap the plan didn't anticipate. Worth surfacing explicitly now rather than letting it be discovered downstream.",
+      body: "Risk isn't yet being actively owned by leadership, and the people closest to the work, staff or area leads, are also showing strain. Left alone, these two gaps tend to compound: unmanaged risk becomes frontline staff's problem to absorb, whether that's fielding upset patrons, handling a privacy concern, or covering a gap the plan didn't anticipate. Worth surfacing explicitly now rather than letting it be discovered downstream.",
     });
   }
 

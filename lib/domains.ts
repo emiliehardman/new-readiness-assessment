@@ -83,7 +83,7 @@ export const domains: Domain[] = [
       "I can name what slows decisions on this initiative, including my own hesitation or avoidance where that is a factor.",
     ],
     strengthNote:
-      "Staff can see you following through on this, which is what earns you room to make an unpopular call. Use that room now: name the decision you've been sitting on, and make it while people still trust your judgment here.",
+      "Staff can see you following through with integrity on this, which is what earns you room to make a more unpopular call if you need to. Use that room now: name the decision you've been sitting on, and make it while people still trust your judgment here.",
     priorityNote:
       "Name one decision on this initiative that has sat unmade for more than two weeks. Either make it this week, or set a firm date by which you will.",
     reflectionPrompt:
@@ -119,7 +119,7 @@ export const domains: Domain[] = [
       "When an area lead meets resistance from their team, I help them work through it rather than stepping in to smooth it over or leaving them to absorb it alone.",
     ],
     strengthNote:
-      "Tell your area leads plainly that when they hit resistance, you want to hear about it, not have it quietly handled without you. Saying that directly is what keeps them bringing you real problems instead of working around you.",
+      "Tell your area leads plainly that when they hit resistance, you want to hear about it and work through it with you. Saying that directly is what keeps them bringing you real problems instead of working around you.",
     priorityNote:
       "Sit in on how one area lead is handling pushback this month. Ask what support would actually help before assuming you already know.",
     reflectionPrompt:
@@ -175,7 +175,7 @@ export const domains: Domain[] = [
     strengthNote:
       "The risks here are being actively managed, not just logged once and set aside. Keep revisiting them as the initiative evolves: the risk that actually causes a problem six months from now is rarely the one you flagged at launch.",
     priorityNote:
-      "Pick one risk you've quietly written off as unlikely, and ask a colleague for their honest take on it before you let it drop.",
+      "Pick one risk you've written off as unlikely, and ask a colleague for their honest take on it before you let it drop.",
     reflectionPrompt:
       "What's the version of this initiative going wrong that you haven't let yourself fully imagine yet, and who would be affected first?",
   },
